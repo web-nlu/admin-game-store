@@ -54,7 +54,7 @@ export default async function RootLayout({
       className={`${geistSans.variable} ${geistMono.variable} antialiased`}
     >
       <div className="min-h-screen bg-gray-50">
-        <Appbar/>
+        <Appbar user={user} />
         <Sidebar />
         <main className="pt-16 min-h-screen">
           {children}

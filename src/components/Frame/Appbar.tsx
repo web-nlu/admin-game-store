@@ -2,10 +2,13 @@
 import {Bell, Gamepad2, LogOut, Menu, User} from "lucide-react";
 import {useSidebarStore} from "@/services/sidebarService";
 
-export default function Appbar() {
+type Props = {
+  user: UserInfo
+}
+
+export default function Appbar({user}: Props) {
 
   const { toggleSidebar } = useSidebarStore();
-
 
   return (
     <header className="bg-white shadow-sm border-b border-gray-200 fixed w-full top-0 z-50">
@@ -45,8 +48,8 @@ export default function Appbar() {
               <User className="h-5 w-5 text-gray-600"/>
             </div>
             <div className="hidden sm:block">
-              <p className="text-sm font-medium text-gray-900">Admin</p>
-              <p className="text-xs text-gray-500">admin@gamestore.com</p>
+              <p className="text-sm font-medium text-gray-900">{user.username}</p>
+              <p className="text-xs text-gray-500">{user.email}</p>
             </div>
           </div>
 
