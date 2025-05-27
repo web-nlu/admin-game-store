@@ -2,6 +2,7 @@
 import {Edit, Image as ImageIcon, Trash2} from "lucide-react";
 import {formatPrice} from "@/utils/utils";
 import React from "react";
+import Link from "next/link";
 
 type Props = {
   account: Account;
@@ -10,7 +11,7 @@ type Props = {
 
 export default function CartAccount({account, handleEditAction}: Props) {
   return (
-    <div key={account.id} className="bg-white rounded-lg shadow-sm border hover:shadow-md transition-shadow">
+    <Link href={"/"} key={account.id} className="bg-white rounded-lg shadow-sm border hover:shadow-md transition-shadow">
       <div className="p-6">
         <div className="flex items-start justify-between mb-4">
           <div className="flex items-center space-x-3">
@@ -59,6 +60,6 @@ export default function CartAccount({account, handleEditAction}: Props) {
           </div>
         </div>
       </div>
-    </div>
+    </Link>
   )
 }

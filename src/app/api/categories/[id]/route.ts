@@ -6,11 +6,12 @@ export async function PUT(
 ) {
   const { id } = await params;
   try {
+    const token = req.cookies.get("token")?.value;
     const body = await req.json();
     const res = await fetch(`${process.env.NEXT_PUBLIC_SERVER_HOST}/api/admin/category/update/${id}`, {
       method: 'PUT',
       headers: {
-        'Authorization': 'Bearer eyJhbGciOiJIUzI1NiJ9.eyJzdWIiOiJxdWFuZ3RobzIzMDZAZ21haWwuY29tIiwiaWF0IjoxNzQ4MjQ4NjM4LCJleHAiOjE3NTA2Njc4Mzh9.180PiJUI-K7q57GwtiixXnTImBUIJdQl4JSnWvj8N6A',
+        'Authorization': `Bearer ${token}`,
         'Content-Type': 'application/json'
       } ,
       body: JSON.stringify(body),
@@ -28,12 +29,13 @@ export async function DELETE(
   req: NextRequest,
   { params }: { params: Promise<{ id: string }> }
 ) {
+  const token = req.cookies.get("token")?.value;
   const { id } = await params;
   try {
     const res = await fetch(`${process.env.NEXT_PUBLIC_SERVER_HOST}/api/admin/category/delete/${id}`, {
       method: 'DELETE',
       headers: {
-        'Authorization': 'Bearer eyJhbGciOiJIUzI1NiJ9.eyJzdWIiOiJxdWFuZ3RobzIzMDZAZ21haWwuY29tIiwiaWF0IjoxNzQ4MjQ4NjM4LCJleHAiOjE3NTA2Njc4Mzh9.180PiJUI-K7q57GwtiixXnTImBUIJdQl4JSnWvj8N6A',
+        'Authorization': `Bearer ${token}`,
         'Content-Type': 'application/json'
       },
     })

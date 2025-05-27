@@ -5,6 +5,7 @@ import QuickViewModal from "@/components/accounts/QuickViewModal";
 import CartAccount from "@/components/accounts/CartAccount";
 import EmptyList from "@/components/accounts/EmptyList";
 import Pagination from "@/components/common/Pagination";
+import {useCategoryStore} from "@/services/categories/categoriesService";
 
 const AccountManagementDashboard = () => {
   const [totalAccounts, setTotalAccounts] = useState(0);
@@ -12,11 +13,8 @@ const AccountManagementDashboard = () => {
   const [params, setParams] = useState({} as {[key: string]: string});
   const [showModal, setShowModal] = useState(false);
   const [currentAccount, setCurrentAccount] = useState(null as Account | null);
-  const [categories, setCategories] = useState([] as Category[]);
-
-
-  // Get unique categories and games for filters
-  // const games = [...new Set(accounts.map(acc => acc.game))];
+  // const [categories, setCategories] = useState([] as Category[]);
+  const {categories, getCategories} = useCategoryStore()
 
   const onFilter = (key: string, value: string) => {
     if(value === "0") {
@@ -34,26 +32,17 @@ const AccountManagementDashboard = () => {
   }, []);
 
   const fillter= async (params: {[key: string]: string}) => {
-    const [requestCategories, requestAccounts] = await Promise.all([
-      fetch(`${process.env.NEXT_PUBLIC_FRONTEND_HOST}/api/categories`, {
-        method: 'GET',
-        headers: {
-          'Content-Type': 'application/json'
-        },
-        cache: 'force-cache',
-        next: {revalidate: 60}
-      }),
+    const [requestAccounts] = await Promise.all([
       fetch(`${process.env.NEXT_PUBLIC_FRONTEND_HOST}/api/accounts?${new URLSearchParams(params)}`, {
         method: 'GET',
         headers: {
           'Content-Type': 'application/json'
         },
       }),
+      getCategories()
     ]);
-    const { categories } = (await requestCategories.json());
     const { content: accounts, totalElements } = (await requestAccounts.json());
     setFilteredAccounts(accounts);
-    setCategories(categories);
     setTotalAccounts(totalElements);
   }
 
