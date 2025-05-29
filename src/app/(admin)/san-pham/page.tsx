@@ -42,7 +42,7 @@ const AccountManagementDashboard = () => {
       getCategories()
     ]);
     const { content: accounts, totalElements } = (await requestAccounts.json());
-    setFilteredAccounts(accounts);
+    setFilteredAccounts(accounts || []);
     setTotalAccounts(totalElements);
   }
 
@@ -210,7 +210,7 @@ const AccountManagementDashboard = () => {
       </div>
 
       {/* Modal */}
-      {showModal && currentAccount && <QuickViewModal account={currentAccount} setShowModalAction={setShowModal} />}
+      {showModal && <QuickViewModal account={currentAccount} setShowModalAction={setShowModal} />}
     </div>
   );
 };

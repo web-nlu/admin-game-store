@@ -13,16 +13,7 @@ export default function LazyLoadingTable() {
   const {params} = filterOrderStore()
 
   useEffect(() => {
-    setPage(1);
-    if(!first) {
-      fetchData(1).then((res) => {
-        setOrders(res)
-        setHasMore(res.length > 0)
-      });
-    }
-  }, [JSON.stringify(params)]);
-
-  useEffect(() => {
+    console.log(1)
     if (hasMore) {
       fetchData().then((res) => {
         setOrders((prev) => [...prev, ...res])
@@ -31,6 +22,16 @@ export default function LazyLoadingTable() {
       });
     }
   }, [page])
+
+  useEffect(() => {
+    console.log(2)
+    if(!first) {
+      fetchData(1).then((res) => {
+        setOrders(res)
+        setHasMore(res.length > 0)
+      });
+    }
+  }, [JSON.stringify(params)]);
 
   const fetchData = async (initPage?: number) => {
     setHasMore(false);
@@ -46,6 +47,7 @@ export default function LazyLoadingTable() {
   }
 
   useEffect(() => {
+    console.log(3)
     if (inView && hasMore) {
       setPage((prev) => prev + 1);
     }

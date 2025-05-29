@@ -11,7 +11,7 @@ type Props = {
 
 export default function CartAccount({account, handleEditAction}: Props) {
   return (
-    <Link href={"/"} key={account.id} className="bg-white rounded-lg shadow-sm border hover:shadow-md transition-shadow">
+    <div key={account.id} className="bg-white rounded-lg shadow-sm border hover:shadow-md transition-shadow">
       <div className="p-6">
         <div className="flex items-start justify-between mb-4">
           <div className="flex items-center space-x-3">
@@ -60,6 +60,6 @@ export default function CartAccount({account, handleEditAction}: Props) {
           </div>
         </div>
       </div>
-    </Link>
+    </div>
   )
 }

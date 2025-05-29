@@ -2,7 +2,9 @@ type Account = {
   id: number,
   title: string,
   price: number,
-  category: string ,
+  category: string,
+  categoryId: number,
+  gameId: number,
   image: string,
   info: string,
   game: string

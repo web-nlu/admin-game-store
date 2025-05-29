@@ -2,10 +2,11 @@
 
 import {Eye, Phone, User} from "lucide-react";
 import {formatPrice, formatVietnamTime} from "@/utils/utils";
-import {getStatusColor, getStatusText} from "@/utils/checkout";
+import {getStatusColor, getStatusText} from "@/utils/order";
 import React from "react";
 import {useRouter} from "next/navigation";
 import {getStatusIcon} from "@/components/order/getStatusIcon";
+import ActionOrderButton from "@/components/order/actionButton";
 
 type Props = {
   order: Order
@@ -49,11 +50,12 @@ export default function RowData({ order }: Props) {
       <td className="px-6 py-4 whitespace-nowrap">
         <div className="text-sm text-gray-900">{formatVietnamTime(order.createdAt)}</div>
       </td>
-      <td className="px-6 py-4 whitespace-nowrap text-right text-sm font-medium">
+      <td className="px-6 py-4 whitespace-nowrap flex flex-row text-right text-sm font-medium">
         <button onClick={() => router.push(`/don-hang/${order.id}`)}
                 className="cursor-pointer text-blue-600 hover:text-blue-900 transition-colors">
           <Eye className="w-4 h-4"/>
         </button>
+        { order.status !== "COMPLETED" &&  <ActionOrderButton order={order} /> }
       </td>
     </tr>
   )

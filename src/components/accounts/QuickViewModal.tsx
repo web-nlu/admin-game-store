@@ -1,8 +1,9 @@
 'use client'
 import React from "react";
+import {useCategoryStore} from "@/services/categories/categoriesService";
 
 type Props = {
-  account: Account,
+  account: Account | null,
   setShowModalAction: (show: boolean) => void,
 }
 
@@ -13,6 +14,8 @@ export default function QuickViewModal({account, setShowModalAction}: Props) {
     setShowModalAction(false);
     // setCurrentAccount(null);
   };
+
+  const {categories} = useCategoryStore()
 
   return (
     <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50 text-gray-500">
@@ -50,14 +53,11 @@ export default function QuickViewModal({account, setShowModalAction}: Props) {
               <label className="block text-sm font-medium mb-1">Danh mục</label>
               <select
                 className="w-full p-3 border rounded-md focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
-                defaultValue={account?.category}
+                defaultValue={account?.categoryId}
               >
-                <option value="">Select Category</option>
-                <option value="Basic">Basic</option>
-                <option value="Premium">Premium</option>
-                <option value="Legendary">Legendary</option>
-                <option value="Competitive">Competitive</option>
-                <option value="Collector">Collector</option>
+                {categories.map(category => (
+                  <option key={category.id} value={category.id}>{category.name}</option>
+                ))}
               </select>
             </div>
           </div>

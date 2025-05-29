@@ -2,8 +2,11 @@
 import { Download, RefreshCw } from 'lucide-react';
 import LazyLoadingTable from "@/components/order/LazyLoadingTable";
 import FilterOrder from "@/components/order/filterOrder";
+import ModalUpdateComplete from "@/components/order/ModalUpdateComplete";
+import {useModalUpdateCompleteStore} from "@/services/order/modalUpdateCompleteService";
 
 export default function OrdersPage () {
+  const {isOpen} = useModalUpdateCompleteStore()
   return (
     <div className="min-h-screen bg-gray-50">
       <div className="bg-white shadow-sm border-b">
@@ -36,6 +39,7 @@ export default function OrdersPage () {
           <LazyLoadingTable />
         </div>
       </div>
+      { isOpen && <ModalUpdateComplete /> }
     </div>
   )
 }
