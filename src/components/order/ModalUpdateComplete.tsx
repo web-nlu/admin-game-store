@@ -1,10 +1,11 @@
 'use client'
 
-import {useEffect, useRef, useState} from "react";
+import {DetailedHTMLProps, HTMLAttributes, useEffect, useRef, useState} from "react";
 import {useModalUpdateCompleteStore} from "@/services/order/modalUpdateCompleteService";
 import {useCurrentOrderStore} from "@/services/order/currentOrder";
 import {changeStatus} from "@/utils/order";
 import DataLoading from "@/components/common/DataLoading";
+import AppButton from "@/components/common/Button";
 
 
 export default function ModalUpdateComplete() {
@@ -15,11 +16,10 @@ export default function ModalUpdateComplete() {
   const modalRef = useRef(null);
   const {closeModal} = useModalUpdateCompleteStore()
   const {clear, order} = useCurrentOrderStore();
-  const [loading, setLoading] = useState(false);
 
   // Đóng modal khi click ra ngoài
   useEffect(() => {
-    const handleClickOutside = (event) => {
+    const handleClickOutside = (event: MouseEvent) => {
       if (modalRef.current && !modalRef.current.contains(event.target)) {
         closeModal();
         clear();
@@ -29,8 +29,8 @@ export default function ModalUpdateComplete() {
     return () => document.removeEventListener('mousedown', handleClickOutside);
   }, []);
 
-  const handleUpdate = () => {
-    changeStatus(order!.id, data).then((res) => {
+  const handleUpdate = async () => {
+    await changeStatus(order!.id, data).then((res) => {
       if (res) closeModal()
     });
   }
@@ -81,12 +81,7 @@ export default function ModalUpdateComplete() {
           >
             Hủy
           </button>
-          <button
-            onClick={handleUpdate}
-            className="px-4 py-2 bg-blue-600 text-white rounded-md hover:bg-blue-700"
-          >
-            Cập nhật
-          </button>
+          <AppButton label="Cập nhật" onClick={handleUpdate} />
         </div>
       </div>
     </div>

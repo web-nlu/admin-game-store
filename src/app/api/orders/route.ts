@@ -23,7 +23,7 @@ export async function GET(req: NextRequest) {
 
     const {data, message} = await res.json();
 
-    return new NextResponse(JSON.stringify({ orders: data, message }), {status: res.status});
+    return new NextResponse(JSON.stringify({ orders: data || [], message }), {status: res.status});
   } catch (e) {
     console.error(e);
     return new NextResponse(JSON.stringify({ orders: [], message: "Lỗi kết nối đến server." }), {status: 500})
