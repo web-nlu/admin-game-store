@@ -8,7 +8,7 @@ const menuItems = [
   { id: 'dashboard', label: 'Dashboard', icon: Home, href: '/' },
   { id: 'accounts', label: 'Tài khoản Game', icon: Gamepad2, href: '/san-pham' },
   { id: 'categories', label: 'Danh mục', icon: Package, href: '/danh-muc' },
-  { id: 'orders', label: 'Đơn hàng', icon: ShoppingCart, href: '/orders' },
+  { id: 'orders', label: 'Đơn hàng', icon: ShoppingCart, href: '/don-hang' },
   { id: 'customers', label: 'Khách hàng', icon: Users, href: '/customers' },
   { id: 'payments', label: 'Thanh toán', icon: CreditCard, href: '/payments' },
   { id: 'analytics', label: 'Thống kê', icon: BarChart3, href: '/analytics' },
