@@ -29,7 +29,7 @@ export async function POST(req: NextRequest) {
       body: JSON.stringify(body),
     })
     const {data, message} = await res.json();
-    return new NextResponse(JSON.stringify({ category: data, message }), {status: 200});
+    return new NextResponse(JSON.stringify({ category: data, message }), {status: res.status});
   } catch (error) {
     return new NextResponse(JSON.stringify({ category: null, message: "Lỗi hệ thống" }), { status: 500 });
   }

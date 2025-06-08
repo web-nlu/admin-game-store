@@ -23,7 +23,7 @@ export default function CartAccount({account, handleEditAction}: Props) {
               )}
             </div>
             <div>
-              <h3 className="font-semibold text-gray-900 line-clamp-1">{account.title}</h3>
+              <Link href={`/san-pham/${account.id}`} className="font-semibold text-gray-900 line-clamp-1">{account.title}</Link>
               <p className="text-sm text-gray-500">{account.game}</p>
             </div>
           </div>

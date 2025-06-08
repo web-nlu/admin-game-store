@@ -34,3 +34,18 @@ type AccountDetail = {
   rating: number,
   reviews: Review[],
 }
+
+type BodySetAccount = {
+  title: string,
+  price: string,
+  salePrice: string,
+  image: string,
+  info: string,
+  server: string,
+  description: string,
+  features: string[],
+  level: string,
+  warranty: string,
+  tags: string[],
+  gameId: string
+}

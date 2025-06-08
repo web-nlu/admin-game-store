@@ -28,3 +28,23 @@ export async function GET(req: NextRequest) {
       return new NextResponse(JSON.stringify({ }), { status: 500 });
     }
 }
+
+
+export async function POST(req: NextRequest) {
+  try {
+    const token = req.cookies.get("token")?.value;
+    const body = await req.json();
+    const res = await fetch(`${process.env.NEXT_PUBLIC_SERVER_HOST}/api/admin/accounts`, {
+      method: 'POST',
+      headers: {
+        'Authorization': `Bearer ${token}`,
+        'Content-Type': 'application/json'
+      } ,
+      body: JSON.stringify(body),
+    })
+    const {data, message} = await res.json();
+    return new NextResponse(JSON.stringify({ account: data, message }), {status: res.status});
+  } catch (error) {
+    return new NextResponse(JSON.stringify({ account: null, message: "Lỗi hệ thống" }), { status: 500 });
+  }
+}

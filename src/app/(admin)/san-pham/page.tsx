@@ -6,6 +6,8 @@ import CartAccount from "@/components/accounts/CartAccount";
 import EmptyList from "@/components/accounts/EmptyList";
 import Pagination from "@/components/common/Pagination";
 import {useCategoryStore} from "@/services/categories/categoriesService";
+import {useGameStore} from "@/services/games/gamesService";
+import Link from "next/link";
 
 const AccountManagementDashboard = () => {
   const [totalAccounts, setTotalAccounts] = useState(0);
@@ -15,6 +17,7 @@ const AccountManagementDashboard = () => {
   const [currentAccount, setCurrentAccount] = useState(null as Account | null);
   // const [categories, setCategories] = useState([] as Category[]);
   const {categories, getCategories} = useCategoryStore()
+  const {games, getGames} = useGameStore()
 
   const onFilter = (key: string, value: string) => {
     if(value === "0") {
@@ -39,7 +42,8 @@ const AccountManagementDashboard = () => {
           'Content-Type': 'application/json'
         },
       }),
-      getCategories()
+      getCategories(),
+      params["categoryId"] && getGames(params["categoryId"])
     ]);
     const { content: accounts, totalElements } = (await requestAccounts.json());
     setFilteredAccounts(accounts || []);
@@ -88,46 +92,6 @@ const AccountManagementDashboard = () => {
               </div>
             </div>
           </div>
-
-          {/*<div className="bg-white p-6 rounded-lg shadow-sm border">*/}
-          {/*  <div className="flex items-center justify-between">*/}
-          {/*    <div>*/}
-          {/*      <p className="text-sm text-gray-600">Premium Accounts</p>*/}
-          {/*      <p className="text-2xl font-bold text-purple-600">{accounts.filter(a => a.category === 'Premium').length}</p>*/}
-          {/*    </div>*/}
-          {/*    <div className="bg-purple-100 p-3 rounded-lg">*/}
-          {/*      <div className="w-6 h-6 bg-purple-600 rounded"></div>*/}
-          {/*    </div>*/}
-          {/*  </div>*/}
-          {/*</div>*/}
-
-          {/*<div className="bg-white p-6 rounded-lg shadow-sm border">*/}
-          {/*  <div className="flex items-center justify-between">*/}
-          {/*    <div>*/}
-          {/*      <p className="text-sm text-gray-600">Average Price</p>*/}
-          {/*      <p className="text-2xl font-bold text-green-600">*/}
-          {/*        ${(accounts.reduce((sum, acc) => sum + acc.price, 0) / accounts.length).toFixed(0)}*/}
-          {/*      </p>*/}
-          {/*    </div>*/}
-          {/*    <div className="bg-green-100 p-3 rounded-lg">*/}
-          {/*      <div className="w-6 h-6 bg-green-600 rounded"></div>*/}
-          {/*    </div>*/}
-          {/*  </div>*/}
-          {/*</div>*/}
-
-          {/*<div className="bg-white p-6 rounded-lg shadow-sm border">*/}
-          {/*  <div className="flex items-center justify-between">*/}
-          {/*    <div>*/}
-          {/*      <p className="text-sm text-gray-600">Total Value</p>*/}
-          {/*      <p className="text-2xl font-bold text-orange-600">*/}
-          {/*        ${totalAccounts}*/}
-          {/*      </p>*/}
-          {/*    </div>*/}
-          {/*    <div className="bg-orange-100 p-3 rounded-lg">*/}
-          {/*      <div className="w-6 h-6 bg-orange-600 rounded"></div>*/}
-          {/*    </div>*/}
-          {/*  </div>*/}
-          {/*</div>*/}
         </div>
 
         {/* Controls */}
@@ -135,7 +99,7 @@ const AccountManagementDashboard = () => {
           <div className="flex flex-col lg:flex-row lg:items-center lg:justify-between space-y-4 lg:space-y-0">
             <div className="flex flex-col md:flex-row space-y-2 md:space-y-0 md:space-x-4">
               <div className="relative">
-                <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-400 w-4 h-4" />
+                <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-400 w-4 h-4"/>
                 <input
                   type="text"
                   placeholder="Search accounts, games, or info..."
@@ -145,7 +109,7 @@ const AccountManagementDashboard = () => {
               </div>
 
               <div className="relative">
-                <Filter className="absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-400 w-4 h-4" />
+                <Filter className="absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-400 w-4 h-4"/>
                 <select
                   className="pl-10 pr-4 py-2 border rounded-md appearance-none bg-white focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
                   value={params["categoryId"] ?? "ALL"}
@@ -158,37 +122,39 @@ const AccountManagementDashboard = () => {
                 </select>
               </div>
 
-              {/*<select*/}
-              {/*  className="px-4 py-2 border rounded-md appearance-none bg-white focus:ring-2 focus:ring-blue-500 focus:border-blue-500"*/}
-              {/*  value={selectedGame}*/}
-              {/*  onChange={(e) => setSelectedGame(e.target.value)}*/}
-              {/*>*/}
-              {/*  <option value="ALL">All Games</option>*/}
-              {/*  {games.map(game => (*/}
-              {/*    <option key={game} value={game}>{game}</option>*/}
-              {/*  ))}*/}
-              {/*</select>*/}
+              <div className="relative">
+                <Filter className="absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-400 w-4 h-4"/>
+                <select
+                  className="pl-10 pr-4 py-2 border rounded-md appearance-none bg-white focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
+                  value={params["categoryId"] ?? "ALL"}
+                  onChange={(e) => onFilter("gameId", e.target.value)}
+                >
+                  <option value="0">Game</option>
+                  {games.map(game => (
+                    <option key={game.id} value={game.id}>{game.name}</option>
+                  ))}
+                </select>
+              </div>
             </div>
 
             <div className="flex space-x-2">
-              <button className="flex items-center px-4 py-2 text-gray-600 border rounded-md hover:bg-gray-50 transition-colors">
-                <Download className="w-4 h-4 mr-2" />
-                Export
-              </button>
-              <button className="flex items-center px-4 py-2 text-gray-600 border rounded-md hover:bg-gray-50 transition-colors">
-                <Upload className="w-4 h-4 mr-2" />
-                Import
-              </button>
-              <button
-                onClick={() => {
-                  setCurrentAccount(null);
-                  setShowModal(true);
-                }}
+              {/*<button*/}
+              {/*  className="flex items-center px-4 py-2 text-gray-600 border rounded-md hover:bg-gray-50 transition-colors">*/}
+              {/*  <Download className="w-4 h-4 mr-2"/>*/}
+              {/*  Export*/}
+              {/*</button>*/}
+              {/*<button*/}
+              {/*  className="flex items-center px-4 py-2 text-gray-600 border rounded-md hover:bg-gray-50 transition-colors">*/}
+              {/*  <Upload className="w-4 h-4 mr-2"/>*/}
+              {/*  Import*/}
+              {/*</button>*/}
+              <Link
+                href={"/san-pham/add"}
                 className="flex items-center px-4 py-2 bg-blue-600 text-white rounded-md hover:bg-blue-700 transition-colors"
               >
                 <Plus className="w-4 h-4 mr-2" />
-                Add Account
-              </button>
+                Thêm tài khoản
+              </Link>
             </div>
           </div>
         </div>

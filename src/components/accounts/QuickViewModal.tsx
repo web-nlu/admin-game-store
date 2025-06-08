@@ -1,6 +1,7 @@
 'use client'
 import React from "react";
 import {useCategoryStore} from "@/services/categories/categoriesService";
+import {useGameStore} from "@/services/games/gamesService";
 
 type Props = {
   account: Account | null,
@@ -16,6 +17,7 @@ export default function QuickViewModal({account, setShowModalAction}: Props) {
   };
 
   const {categories} = useCategoryStore()
+  const {games} = useGameStore()
 
   return (
     <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50 text-gray-500">
@@ -68,14 +70,9 @@ export default function QuickViewModal({account, setShowModalAction}: Props) {
               className="w-full p-3 border rounded-md focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
               defaultValue={account?.game}
             >
-              <option value="">Select Game</option>
-              <option value="World of Warcraft">World of Warcraft</option>
-              <option value="Diablo 4">Diablo 4</option>
-              <option value="League of Legends">League of Legends</option>
-              <option value="CS:GO">CS:GO</option>
-              <option value="Valorant">Valorant</option>
-              <option value="Fortnite">Fortnite</option>
-              <option value="Apex Legends">Apex Legends</option>
+              {games.map(game => (
+                <option key={game.id} value={game.id}>{game.name}</option>
+              ))}
             </select>
           </div>
 

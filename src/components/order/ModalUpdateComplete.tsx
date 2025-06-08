@@ -1,10 +1,9 @@
 'use client'
 
-import {DetailedHTMLProps, HTMLAttributes, useEffect, useRef, useState} from "react";
+import { useEffect, useRef } from "react";
 import {useModalUpdateCompleteStore} from "@/services/order/modalUpdateCompleteService";
 import {useCurrentOrderStore} from "@/services/order/currentOrder";
 import {changeStatus} from "@/utils/order";
-import DataLoading from "@/components/common/DataLoading";
 import AppButton from "@/components/common/Button";
 
 
