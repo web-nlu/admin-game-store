@@ -20,7 +20,7 @@ type AccountDetail = {
   info: string,
   game: string
   server: string,
-  imageGallery: string[],
+  imageGallery: ImageData[],
   description: string,
   features: string[],
   level: number,

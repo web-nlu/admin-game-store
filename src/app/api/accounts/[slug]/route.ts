@@ -42,3 +42,24 @@ export async function PUT(
     return new NextResponse(JSON.stringify({ account: null, message: "Lỗi hệ thống" }), { status: 500 });
   }
 }
+
+export async function DELETE(
+  req: NextRequest,
+  { params }: { params: Promise<{ slug: string }> }
+) {
+  const token = req.cookies.get("token")?.value;
+  const { slug } = await params;
+  try {
+    const res = await fetch(`${process.env.NEXT_PUBLIC_SERVER_HOST}/api/admin/accounts/delete-account/${slug}`, {
+      method: 'DELETE',
+      headers: {
+        'Authorization': `Bearer ${token}`,
+        'Content-Type': 'application/json'
+      },
+    })
+    const { message } = await res.json();
+    return new NextResponse(JSON.stringify({ message }), {status: res.status});
+  } catch (error) {
+    return new NextResponse(JSON.stringify({ message: "Lỗi hệ thống" }), { status: 500 });
+  }
+}

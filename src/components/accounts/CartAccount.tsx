@@ -3,6 +3,8 @@ import {Edit, Image as ImageIcon, Trash2} from "lucide-react";
 import {formatPrice} from "@/utils/utils";
 import React from "react";
 import Link from "next/link";
+import {CldImage} from "next-cloudinary";
+import {useAccountStore} from "@/services/accounts/accountsService";
 
 type Props = {
   account: Account;
@@ -10,6 +12,8 @@ type Props = {
 }
 
 export default function CartAccount({account, handleEditAction}: Props) {
+  const {deleteAccount} = useAccountStore()
+
   return (
     <div key={account.id} className="bg-white rounded-lg shadow-sm border hover:shadow-md transition-shadow">
       <div className="p-6">
@@ -17,7 +21,7 @@ export default function CartAccount({account, handleEditAction}: Props) {
           <div className="flex items-center space-x-3">
             <div className="w-12 h-12 bg-gray-100 rounded-lg flex items-center justify-center overflow-hidden">
               {account.image ? (
-                <img src={account.image} alt={account.title} className="w-full h-full object-cover"/>
+                <CldImage src={account.image} alt={account.title} width={120} height={120}/>
               ) : (
                 <ImageIcon className="w-6 h-6 text-gray-400"/>
               )}
@@ -35,7 +39,7 @@ export default function CartAccount({account, handleEditAction}: Props) {
               <Edit className="w-4 h-4"/>
             </button>
             <button
-              // onClick={() => handleDelete(account.id)}
+              onClick={() => deleteAccount(account.id)}
               className="p-2 text-gray-400 hover:text-red-600 transition-colors"
             >
               <Trash2 className="w-4 h-4"/>

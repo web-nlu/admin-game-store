@@ -1,16 +1,21 @@
 'use client'
 
 import React, {useEffect, useState} from 'react';
-import { Upload, Save, Gamepad2 } from 'lucide-react';
+import { Save, Gamepad2 } from 'lucide-react';
 import {useParams} from "next/navigation";
-import toast from "react-hot-toast";
 import {useCategoryStore} from "@/services/categories/categoriesService";
 import {useGameStore} from "@/services/games/gamesService";
 import _ from "lodash";
 import AppendList from "@/components/accounts/AppendList";
+import SingleUpload from "@/components/common/SingleUpload";
+import {useAccountStore} from "@/services/accounts/accountsService";
+import ChooseGameForm from "@/components/accounts/ChooseGameForm";
+import MultiUpload from "@/components/common/MultiUpload";
+import toast from "react-hot-toast";
 
 export default function SetGameAccountForm() {
   const { id } = useParams<{id: string}>();
+  const [images, setImages] = useState([])
   const [formData, setFormData] = useState({
     title: '',
     price: '',
@@ -27,6 +32,7 @@ export default function SetGameAccountForm() {
   } as BodySetAccount);
 
   const [isSubmitting, setIsSubmitting] = useState(false);
+  const {updateAccount} = useAccountStore()
 
   useEffect(() => {
     if (_.isEmpty(categories)) {
@@ -35,6 +41,11 @@ export default function SetGameAccountForm() {
     fetch(`${process.env.NEXT_PUBLIC_FRONTEND_HOST}/api/accounts/${id}`)
       .then(async (res) => {
         const { account } = await res.json();
+        if(!res.ok) {
+          window.location.href = "/san-pham";
+          return;
+        }
+        setImages(account.imageGallery)
         setFormData({
           title: account.title || "",
           price: account.price || "",
@@ -54,7 +65,7 @@ export default function SetGameAccountForm() {
   },[])
 
   const {categories, getCategories} = useCategoryStore()
-  const {games, getGames} = useGameStore()
+  const {getGames} = useGameStore()
 
   const handleInputChange = (e) => {
     const { name, value } = e.target;
@@ -74,49 +85,51 @@ export default function SetGameAccountForm() {
   const handleSubmit = async (e) => {
     e.preventDefault();
     setIsSubmitting(true);
+    await updateAccount(parseInt(id), formData)
+    setIsSubmitting(false);
+  };
 
-    // Xử lý dữ liệu trước khi gửi
-    const submitData = {
-      ...formData,
-      price: parseFloat(formData.price) || 0,
-      salePrice: parseFloat(formData.salePrice) || 0,
-      level: parseInt(formData.level) || 0,
-      features: formData.features.filter(f => f.trim() !== ''),
-      tags: formData.tags.filter(t => t.trim() !== '')
-    };
-
+  const handleUpload = async (newImages: ImageDetail[]) => {
     try {
-      // Gọi API ở đây
-      console.log('Submitting data:', submitData);
-
-      // Simulate API call
-      const response = await fetch(`${process.env.NEXT_PUBLIC_FRONTEND_HOST}/api/accounts/${id}`, {
-        method: 'PUT',
+      const res = await fetch(`/api/accounts/images/${id}`, {
+        method: 'PUT', // hoặc PATCH tùy backend bạn
         headers: {
           'Content-Type': 'application/json'
         },
-        body: JSON.stringify(submitData)
-      })
-      const {message} = await response.json();
-      if(!response.ok) {
-        toast.error(message);
-        return
-      }
+        body: JSON.stringify(newImages)
+      });
 
-      toast.success('Cập nhật tài khoản game thành công!');
+      const {images, message} = await res.json();
+      if (!res.ok) throw new Error(message);
+      setImages(images);
+      toast.success(message);
     } catch (error) {
-      console.error('Error:', error);
-      toast.error('Có lỗi xảy ra, vui lòng thử lại!');
-    } finally {
-      setIsSubmitting(false);
+      console.log(error);
+      toast.error((error as Error).message);
     }
-  };
+  }
+
+  const handleDeleteImage= async (id: number) => {
+    try {
+      const res = await fetch(`/api/images/${id}`, {
+        method: 'DELETE'
+      });
+      const {message} = await res.json();
+
+      if (!res.ok) throw new Error(message);
+      toast.success("Xoá thành công")
+      return true
+    } catch (err) {
+      toast.error((err as Error).message);
+      return false
+    }
+  }
 
   return (
     <div className="min-h-screen bg-gradient-to-br from-purple-600 via-blue-600 to-cyan-600 py-8 px-4">
       <div className="max-w-4xl mx-auto">
         {/* Header */}
-        <div className="bg-white/95 backdrop-blur-lg rounded-t-3xl p-8 shadow-2xl">
+        <div className="bg-white/95 backdrop-blur-lg rounded-md p-8 shadow-2xl">
           <div className="text-center">
             <div className="inline-flex items-center justify-center w-16 h-16 bg-gradient-to-r from-orange-500 to-red-500 rounded-full mb-4">
               <Gamepad2 className="w-8 h-8 text-white" />
@@ -131,7 +144,7 @@ export default function SetGameAccountForm() {
         </div>
 
         {/* Form */}
-        <div className="bg-white/95 backdrop-blur-lg rounded-b-3xl p-8 shadow-2xl">
+        <div className="bg-white/95 backdrop-blur-lg rounded-md p-8 shadow-2xl">
           <form onSubmit={handleSubmit} className="space-y-6">
             {/* Basic Information */}
             <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
@@ -144,7 +157,7 @@ export default function SetGameAccountForm() {
                   name="title"
                   value={formData.title}
                   onChange={handleInputChange}
-                  className="w-full px-4 py-3 border border-gray-300 rounded-xl focus:ring-2 focus:ring-orange-500 focus:border-transparent transition-all duration-200"
+                  className="w-full px-4 py-3 border border-gray-300 rounded-md focus:ring-2 focus:ring-orange-500 focus:border-transparent transition-all duration-200"
                   placeholder="VD: Tài khoản Liên Quân VIP"
                   required
                 />
@@ -158,7 +171,7 @@ export default function SetGameAccountForm() {
                   name="server"
                   value={formData.server}
                   onChange={handleInputChange}
-                  className="w-full px-4 py-3 border border-gray-300 rounded-xl focus:ring-2 focus:ring-orange-500 focus:border-transparent transition-all duration-200"
+                  className="w-full px-4 py-3 border border-gray-300 rounded-md focus:ring-2 focus:ring-orange-500 focus:border-transparent transition-all duration-200"
                   required
                 >
                   <option value="">Chọn server</option>
@@ -172,34 +185,10 @@ export default function SetGameAccountForm() {
               </div>
             </div>
 
-            <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
-              <div className="space-y-2">
-                <select
-                  className="w-full px-4 py-3 border border-gray-300 rounded-xl focus:ring-2 focus:ring-orange-500 focus:border-transparent transition-all duration-200"
-                  defaultValue="0"
-                  onChange={(e) => getGames(e.target.value.toString())}
-                >
-                  <option value="0">Danh mục</option>
-                  {categories.map(category => (
-                    <option key={category.id} value={category.id}>{category.name}</option>
-                  ))}
-                </select>
-              </div>
-
-              <div className="space-y-2">
-                <select
-                  className="w-full px-4 py-3 border border-gray-300 rounded-xl focus:ring-2 focus:ring-orange-500 focus:border-transparent transition-all duration-200"
-                  value={formData.gameId}
-                  name="gameId"
-                  onChange={handleInputChange}
-                >
-                  <option value="0">Game</option>
-                  {games.map(game => (
-                    <option key={game.id} value={game.id}>{game.name}</option>
-                  ))}
-                </select>
-              </div>
-            </div>
+            <ChooseGameForm gameId={formData.gameId} handleChangeGame={(value: string) => setFormData((prev) => ({
+              ...prev,
+              gameId: value
+            }))} />
 
             {/* Price Information */}
             <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
@@ -212,7 +201,7 @@ export default function SetGameAccountForm() {
                   name="price"
                   value={formData.price}
                   onChange={handleInputChange}
-                  className="w-full px-4 py-3 border border-gray-300 rounded-xl focus:ring-2 focus:ring-orange-500 focus:border-transparent transition-all duration-200"
+                  className="w-full px-4 py-3 border border-gray-300 rounded-md focus:ring-2 focus:ring-orange-500 focus:border-transparent transition-all duration-200"
                   placeholder="0"
                   min="0"
                   required
@@ -228,7 +217,7 @@ export default function SetGameAccountForm() {
                   name="salePrice"
                   value={formData.salePrice}
                   onChange={handleInputChange}
-                  className="w-full px-4 py-3 border border-gray-300 rounded-xl focus:ring-2 focus:ring-orange-500 focus:border-transparent transition-all duration-200"
+                  className="w-full px-4 py-3 border border-gray-300 rounded-md focus:ring-2 focus:ring-orange-500 focus:border-transparent transition-all duration-200"
                   placeholder="0"
                   min="0"
                 />
@@ -243,7 +232,7 @@ export default function SetGameAccountForm() {
                   name="level"
                   value={formData.level}
                   onChange={handleInputChange}
-                  className="w-full px-4 py-3 border border-gray-300 rounded-xl focus:ring-2 focus:ring-orange-500 focus:border-transparent transition-all duration-200"
+                  className="w-full px-4 py-3 border border-gray-300 rounded-md focus:ring-2 focus:ring-orange-500 focus:border-transparent transition-all duration-200"
                   placeholder="1"
                   min="1"
                   required
@@ -256,35 +245,11 @@ export default function SetGameAccountForm() {
               <label className="block text-sm font-semibold text-gray-700">
                 Hình ảnh đại diện <span className="text-red-500">*</span>
               </label>
-              <div className="flex items-center space-x-4">
-                <input
-                  type="url"
-                  name="image"
-                  value={formData.image}
-                  onChange={handleInputChange}
-                  className="flex-1 px-4 py-3 border border-gray-300 rounded-xl focus:ring-2 focus:ring-orange-500 focus:border-transparent transition-all duration-200"
-                  placeholder="https://example.com/image.jpg"
-                />
-                <button
-                  type="button"
-                  className="px-4 py-3 bg-gray-100 text-gray-700 rounded-xl hover:bg-gray-200 transition-colors duration-200 flex items-center space-x-2"
-                >
-                  <Upload className="w-4 h-4"/>
-                  <span>Upload</span>
-                </button>
-              </div>
-              {formData.image && (
-                <div className="mt-2">
-                  <img
-                    src={formData.image}
-                    alt="Preview"
-                    className="w-32 h-32 object-cover rounded-lg border"
-                    onError={(e) => {
-                      e.target.style.display = 'none';
-                    }}
-                  />
-                </div>
-              )}
+              <SingleUpload
+                image={formData.image}
+                handleInputChange={(value: string) =>
+                  setFormData((prev) => ({ ...prev, image: value }))}
+              />
             </div>
 
             {/* Info */}
@@ -297,7 +262,7 @@ export default function SetGameAccountForm() {
                 value={formData.info}
                 onChange={handleInputChange}
                 rows={3}
-                className="w-full px-4 py-3 border border-gray-300 rounded-xl focus:ring-2 focus:ring-orange-500 focus:border-transparent transition-all duration-200 resize-none"
+                className="w-full px-4 py-3 border border-gray-300 rounded-md focus:ring-2 focus:ring-orange-500 focus:border-transparent transition-all duration-200 resize-none"
                 placeholder="Thông tin chi tiết về tài khoản (username, rank, skin, v.v.)"
                 required
               />
@@ -313,7 +278,7 @@ export default function SetGameAccountForm() {
                 value={formData.description}
                 onChange={handleInputChange}
                 rows={4}
-                className="w-full px-4 py-3 border border-gray-300 rounded-xl focus:ring-2 focus:ring-orange-500 focus:border-transparent transition-all duration-200 resize-none"
+                className="w-full px-4 py-3 border border-gray-300 rounded-md focus:ring-2 focus:ring-orange-500 focus:border-transparent transition-all duration-200 resize-none"
                 placeholder="Mô tả chi tiết về tài khoản, ưu điểm, đặc điểm nổi bật..."
               />
             </div>
@@ -331,7 +296,7 @@ export default function SetGameAccountForm() {
                 name="warranty"
                 value={formData.warranty}
                 onChange={handleInputChange}
-                className="w-full px-4 py-3 border border-gray-300 rounded-xl focus:ring-2 focus:ring-orange-500 focus:border-transparent transition-all duration-200"
+                className="w-full px-4 py-3 border border-gray-300 rounded-md focus:ring-2 focus:ring-orange-500 focus:border-transparent transition-all duration-200"
               >
                 <option value="">Chọn chính sách bảo hành</option>
                 <option value="7 ngày">7 ngày</option>
@@ -347,7 +312,7 @@ export default function SetGameAccountForm() {
               <button
                 type="submit"
                 disabled={isSubmitting}
-                className="w-full bg-gradient-to-r from-orange-500 to-red-500 text-white font-semibold py-4 px-6 rounded-xl hover:from-orange-600 hover:to-red-600 focus:ring-4 focus:ring-orange-200 transition-all duration-200 flex items-center justify-center space-x-2 disabled:opacity-50 disabled:cursor-not-allowed"
+                className="w-full bg-gradient-to-r from-orange-500 to-red-500 text-white font-semibold py-4 px-6 rounded-md hover:from-orange-600 hover:to-red-600 focus:ring-4 focus:ring-orange-200 transition-all duration-200 flex items-center justify-center space-x-2 disabled:opacity-50 disabled:cursor-not-allowed"
               >
                 {isSubmitting ? (
                   <>
@@ -363,6 +328,9 @@ export default function SetGameAccountForm() {
               </button>
             </div>
           </form>
+        </div>
+        <div className="mt-5 shadow-2xl">
+          <MultiUpload handleSubmit={handleUpload} availableImages={images} handleDelete={handleDeleteImage} />
         </div>
       </div>
     </div>

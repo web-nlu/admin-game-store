@@ -1,6 +1,6 @@
 'use client'
 import React, { useState, useEffect } from 'react';
-import { Search, Plus, Filter, Download, Upload } from 'lucide-react';
+import { Search, Plus, Filter } from 'lucide-react';
 import QuickViewModal from "@/components/accounts/QuickViewModal";
 import CartAccount from "@/components/accounts/CartAccount";
 import EmptyList from "@/components/accounts/EmptyList";
@@ -8,68 +8,51 @@ import Pagination from "@/components/common/Pagination";
 import {useCategoryStore} from "@/services/categories/categoriesService";
 import {useGameStore} from "@/services/games/gamesService";
 import Link from "next/link";
+import {useAccountStore} from "@/services/accounts/accountsService";
+import _ from "lodash";
 
 const AccountManagementDashboard = () => {
-  const [totalAccounts, setTotalAccounts] = useState(0);
-  const [filteredAccounts, setFilteredAccounts] = useState([] as Account[]);
   const [params, setParams] = useState({} as {[key: string]: string});
   const [showModal, setShowModal] = useState(false);
   const [currentAccount, setCurrentAccount] = useState(null as Account | null);
   // const [categories, setCategories] = useState([] as Category[]);
   const {categories, getCategories} = useCategoryStore()
   const {games, getGames} = useGameStore()
-
+  const {accounts, filter, totalAccounts, deleteAccount} = useAccountStore()
   const onFilter = (key: string, value: string) => {
     if(value === "0") {
       delete params[key];
-      fillter(params);
+      filter(params);
       return;
     }
+    delete params["page"]
+    delete params["gameId"]
     params[key] = value;
     setParams(params);
-    fillter(params);
+    filter(params);
+    if(params["categoryId"]) getGames(params["categoryId"])
   }
 
   useEffect(() => {
-    fillter({})
+    filter({})
+    if (_.isEmpty(categories)) {
+      getCategories();
+    }
   }, []);
-
-  const fillter= async (params: {[key: string]: string}) => {
-    const [requestAccounts] = await Promise.all([
-      fetch(`${process.env.NEXT_PUBLIC_FRONTEND_HOST}/api/accounts?${new URLSearchParams(params)}`, {
-        method: 'GET',
-        headers: {
-          'Content-Type': 'application/json'
-        },
-      }),
-      getCategories(),
-      params["categoryId"] && getGames(params["categoryId"])
-    ]);
-    const { content: accounts, totalElements } = (await requestAccounts.json());
-    setFilteredAccounts(accounts || []);
-    setTotalAccounts(totalElements);
-  }
 
   const search = (value: string) => {
     if(value.length > 0 && value.length < 3) return;
     if(!value) {
-      fillter({})
+      filter({})
       return;
     }
-    fillter({keyword: value});
+    filter({keyword: value});
   }
 
   const handleEdit = (account: Account) => {
     setCurrentAccount(account);
     setShowModal(true);
   };
-
-  // const handleDelete = (id: number) => {
-  //   if (window.confirm('Are you sure you want to delete this account?')) {
-  //     setAccounts(accounts.filter(acc => acc.id !== id));
-  //   }
-  // };
-
   return (
     <div className="min-h-screen bg-gray-50 p-6">
       <div className="max-w-7xl mx-auto">
@@ -126,7 +109,7 @@ const AccountManagementDashboard = () => {
                 <Filter className="absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-400 w-4 h-4"/>
                 <select
                   className="pl-10 pr-4 py-2 border rounded-md appearance-none bg-white focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
-                  value={params["categoryId"] ?? "ALL"}
+                  value={params["gameId"] ?? "ALL"}
                   onChange={(e) => onFilter("gameId", e.target.value)}
                 >
                   <option value="0">Game</option>
@@ -161,18 +144,18 @@ const AccountManagementDashboard = () => {
 
         {/* Accounts Grid */}
         <div className="grid grid-cols-1 lg:grid-cols-2 xl:grid-cols-3 gap-6 mb-6">
-          {filteredAccounts.map((account) => (
+          {accounts.map((account) => (
             <CartAccount account={account} key={account.id} handleEditAction={handleEdit} />
           ))}
         </div>
 
         {/* No results message */}
-        {filteredAccounts.length === 0 && (
+        {accounts.length === 0 && (
           <EmptyList />
         )}
 
         {/* Pagination */}
-        <Pagination currentLength={filteredAccounts.length} total={totalAccounts} onChangePageAction={(page) => onFilter("page", page.toString())} />
+        <Pagination currentLength={accounts.length} total={totalAccounts} onChangePageAction={(page) => onFilter("page", page.toString())} />
       </div>
 
       {/* Modal */}

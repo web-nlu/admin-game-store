@@ -35,7 +35,7 @@ export default function AppendList ({list, setList, title}: Props) {
               type="text"
               value={tag}
               onChange={(e) => handleArrayChange(index, e.target.value)}
-              className="flex-1 px-4 py-3 border border-gray-300 rounded-xl focus:ring-2 focus:ring-orange-500 focus:border-transparent transition-all duration-200"
+              className="flex-1 px-4 py-3 border border-gray-300 rounded-md focus:ring-2 focus:ring-orange-500 focus:border-transparent transition-all duration-200"
               placeholder={`${title} ${index + 1}`}
             />
             {list.length > 1 && (
