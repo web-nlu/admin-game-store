@@ -4,9 +4,11 @@ import React, {useEffect, useState} from 'react';
 import { Upload, Save, Gamepad2 } from 'lucide-react';
 import {useCategoryStore} from "@/services/categories/categoriesService";
 import _ from "lodash";
-import AppendList from "@/components/accounts/AppendList";
+import AppendList from "@/components/common/AppendList";
 import {useAccountStore} from "@/services/accounts/accountsService";
-import ChooseGameForm from "@/components/accounts/ChooseGameForm";
+import ChooseGameForm from "@/components/accounts/setAccounts/ChooseGameForm";
+import BasicInfoForm from "@/components/accounts/setAccounts/BasicInfoForm";
+import PriceForm from "@/components/accounts/setAccounts/PriceForm";
 
 export default function SetGameAccountForm() {
   const [formData, setFormData] = useState({
@@ -78,43 +80,7 @@ export default function SetGameAccountForm() {
         <div className="bg-white/95 backdrop-blur-lg rounded-b-3xl p-8 shadow-2xl">
           <form onSubmit={handleSubmit} className="space-y-6">
             {/* Basic Information */}
-            <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
-              <div className="space-y-2">
-                <label className="block text-sm font-semibold text-gray-700">
-                  Tiêu đề tài khoản <span className="text-red-500">*</span>
-                </label>
-                <input
-                  type="text"
-                  name="title"
-                  value={formData.title}
-                  onChange={handleInputChange}
-                  className="w-full px-4 py-3 border border-gray-300 rounded-md focus:ring-2 focus:ring-orange-500 focus:border-transparent transition-all duration-200"
-                  placeholder="VD: Tài khoản Liên Quân VIP"
-                  required
-                />
-              </div>
-
-              <div className="space-y-2">
-                <label className="block text-sm font-semibold text-gray-700">
-                  Server <span className="text-red-500">*</span>
-                </label>
-                <select
-                  name="server"
-                  value={formData.server}
-                  onChange={handleInputChange}
-                  className="w-full px-4 py-3 border border-gray-300 rounded-md focus:ring-2 focus:ring-orange-500 focus:border-transparent transition-all duration-200"
-                  required
-                >
-                  <option value="">Chọn server</option>
-                  <option value="Việt Nam">Việt Nam</option>
-                  <option value="Thái Lan">Thái Lan</option>
-                  <option value="Indonesia">Indonesia</option>
-                  <option value="Malaysia">Malaysia</option>
-                  <option value="Singapore">Singapore</option>
-                  <option value="Philippines">Philippines</option>
-                </select>
-              </div>
-            </div>
+            <BasicInfoForm title={formData.title} server={formData.server} handleInputChange={handleInputChange} />
 
             <ChooseGameForm gameId={formData.gameId} handleChangeGame={(value: string) => setFormData((prev) => ({
               ...prev,
@@ -122,54 +88,7 @@ export default function SetGameAccountForm() {
             }))} />
 
             {/* Price Information */}
-            <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
-              <div className="space-y-2">
-                <label className="block text-sm font-semibold text-gray-700">
-                  Giá gốc (VNĐ) <span className="text-red-500">*</span>
-                </label>
-                <input
-                  type="number"
-                  name="price"
-                  value={formData.price}
-                  onChange={handleInputChange}
-                  className="w-full px-4 py-3 border border-gray-300 rounded-md focus:ring-2 focus:ring-orange-500 focus:border-transparent transition-all duration-200"
-                  placeholder="0"
-                  min="0"
-                  required
-                />
-              </div>
-
-              <div className="space-y-2">
-                <label className="block text-sm font-semibold text-gray-700">
-                  Giá khuyến mãi (VNĐ)
-                </label>
-                <input
-                  type="number"
-                  name="salePrice"
-                  value={formData.salePrice}
-                  onChange={handleInputChange}
-                  className="w-full px-4 py-3 border border-gray-300 rounded-md focus:ring-2 focus:ring-orange-500 focus:border-transparent transition-all duration-200"
-                  placeholder="0"
-                  min="0"
-                />
-              </div>
-
-              <div className="space-y-2">
-                <label className="block text-sm font-semibold text-gray-700">
-                  Level <span className="text-red-500">*</span>
-                </label>
-                <input
-                  type="number"
-                  name="level"
-                  value={formData.level}
-                  onChange={handleInputChange}
-                  className="w-full px-4 py-3 border border-gray-300 rounded-md focus:ring-2 focus:ring-orange-500 focus:border-transparent transition-all duration-200"
-                  placeholder="1"
-                  min="1"
-                  required
-                />
-              </div>
-            </div>
+            <PriceForm price={formData.price} salePrice={formData.salePrice} level={formData.level} handleInputChange={handleInputChange} />
 
             {/* Image */}
             <div className="space-y-2">
