@@ -34,7 +34,7 @@ const AccountManagementDashboard = () => {
   }
 
   useEffect(() => {
-    filter({})
+    filter({status: "available"})
     if (_.isEmpty(categories)) {
       getCategories();
     }
@@ -89,6 +89,19 @@ const AccountManagementDashboard = () => {
                   className="pl-10 pr-4 py-2 border rounded-md w-full md:w-80 focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
                   onChange={(e) => search(e.target.value)}
                 />
+              </div>
+
+              <div className="relative">
+                <Filter className="absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-400 w-4 h-4"/>
+                <select
+                  className="pl-10 pr-4 py-2 border rounded-md appearance-none bg-white focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
+                  value={params["status"] ?? "available"}
+                  onChange={(e) => onFilter("status", e.target.value)}
+                >
+                  <option value={"available"}>Còn hàng</option>
+                  <option value={"sold"}>Hết hàng</option>
+                  <option value={"pending"}>Chờ xử lý</option>
+                </select>
               </div>
 
               <div className="relative">

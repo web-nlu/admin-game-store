@@ -33,7 +33,6 @@ export default function BasicInfoForm({title, server, handleInputChange}: BasicI
           value={server}
           onChange={handleInputChange}
           className="w-full px-4 py-3 border border-gray-300 rounded-md focus:ring-2 focus:ring-orange-500 focus:border-transparent transition-all duration-200"
-          required
         >
           <option value="">Chọn server</option>
           <option value="Việt Nam">Việt Nam</option>
