@@ -11,12 +11,33 @@ type AccountStore = {
   updateAccount: (id: number, formData: BodySetAccount) => Promise<void>;
   deleteAccount: (id: number) => Promise<void>;
   filter: (params: {[key: string]: string}) => Promise<void>;
+  updateStatus: (id: string, status: string) => Promise<boolean>;
 };
 
 export const useAccountStore = create<AccountStore>((set) => ({
   accounts: [],
   loading: false,
   totalAccounts: 0,
+  updateStatus: async (id: string, status: string)=> {
+    set({loading: true});
+    try {
+      const requestAccounts = await fetch(`/api/accounts/status/${id}`, {
+        method: 'PUT',
+        headers: {
+          'Content-Type': 'application/json'
+        },
+        body: JSON.stringify({status})
+      })
+      const { message } = (await requestAccounts.json());
+      toast.success(message);
+      set({loading: false});
+      return true;
+    } catch (e) {
+      toast.error((e as Error).message);
+      set({loading: false});
+      return false;
+    }
+  },
   filter: async (params: {[key: string]: string})=> {
     set({ loading: true });
     try {

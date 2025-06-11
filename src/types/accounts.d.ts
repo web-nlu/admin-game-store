@@ -49,3 +49,9 @@ type BodySetAccount = {
   tags: string[],
   gameId: string
 }
+
+type AccountInfo = {
+  username: string,
+  email: string,
+  password: string,
+}

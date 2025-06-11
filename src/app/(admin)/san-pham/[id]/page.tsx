@@ -1,7 +1,7 @@
 'use client'
 
 import React, {useEffect, useState} from 'react';
-import { Save, Gamepad2 } from 'lucide-react';
+import {Save, Gamepad2, Eye} from 'lucide-react';
 import {useParams} from "next/navigation";
 import {useCategoryStore} from "@/services/categories/categoriesService";
 import {useGameStore} from "@/services/games/gamesService";
@@ -14,10 +14,15 @@ import MultiUpload from "@/components/common/MultiUpload";
 import toast from "react-hot-toast";
 import BasicInfoForm from "@/components/accounts/setAccounts/BasicInfoForm";
 import PriceForm from "@/components/accounts/setAccounts/PriceForm";
+import ModalAccountInfo from "@/components/accounts/ModalAccountInfo";
+import UpdateStatusButton from "@/components/accounts/UpdateStatusButton";
 
 export default function SetGameAccountForm() {
   const { id } = useParams<{id: string}>();
   const [images, setImages] = useState([])
+  const [isModalOpen, setIsModalOpen] = useState(false);
+  const [status, setStatus] = useState("pending");
+
   const [formData, setFormData] = useState({
     title: '',
     price: '',
@@ -34,7 +39,7 @@ export default function SetGameAccountForm() {
   } as BodySetAccount);
 
   const [isSubmitting, setIsSubmitting] = useState(false);
-  const {updateAccount} = useAccountStore()
+  const {updateAccount, updateStatus} = useAccountStore()
 
   useEffect(() => {
     if (_.isEmpty(categories)) {
@@ -48,6 +53,7 @@ export default function SetGameAccountForm() {
           return;
         }
         setImages(account.imageGallery)
+        setStatus(account.status || "pending");
         setFormData({
           title: account.title || "",
           price: account.price || "",
@@ -127,6 +133,10 @@ export default function SetGameAccountForm() {
     }
   }
 
+  const setStatusAccount= async (status: string) => {
+    updateStatus(id, status).then((res) => res && setStatus(status));
+  }
+
   return (
     <div className="min-h-screen bg-gradient-to-br from-purple-600 via-blue-600 to-cyan-600 py-8 px-4">
       <div className="max-w-4xl mx-auto">
@@ -146,18 +156,31 @@ export default function SetGameAccountForm() {
         </div>
 
         {/* Form */}
-        <div className="bg-white/95 backdrop-blur-lg rounded-md p-8 shadow-2xl">
+        <div className="bg-white/95 backdrop-blur-lg rounded-md p-8 shadow-2xl mt-6">
+          <div className="flex flex-row gap-5 mb-3">
+            <button
+              type="button"
+              onClick={() => setIsModalOpen(true)}
+              className="cursor-pointer inline-flex items-center px-4 py-2 bg-blue-600 text-white rounded-lg hover:bg-blue-700 transition-colors"
+            >
+              <Eye className="w-4 h-4 mr-2"/>
+              Chỉnh sửa thông tin
+            </button>
+            <UpdateStatusButton handleChange={setStatusAccount} status={status} />
+          </div>
+
           <form onSubmit={handleSubmit} className="space-y-6">
             {/* Basic Information */}
-            <BasicInfoForm title={formData.title} server={formData.server} handleInputChange={handleInputChange} />
+            <BasicInfoForm title={formData.title} server={formData.server} handleInputChange={handleInputChange}/>
 
             <ChooseGameForm gameId={formData.gameId} handleChangeGame={(value: string) => setFormData((prev) => ({
               ...prev,
               gameId: value
-            }))} />
+            }))}/>
 
             {/* Price Information */}
-            <PriceForm price={formData.price} salePrice={formData.salePrice} level={formData.level} handleInputChange={handleInputChange} />
+            <PriceForm price={formData.price} salePrice={formData.salePrice} level={formData.level}
+                       handleInputChange={handleInputChange}/>
 
             {/* Image */}
             <div className="space-y-2">
@@ -167,7 +190,7 @@ export default function SetGameAccountForm() {
               <SingleUpload
                 image={formData.image}
                 handleInputChange={(value: string) =>
-                  setFormData((prev) => ({ ...prev, image: value }))}
+                  setFormData((prev) => ({...prev, image: value}))}
               />
             </div>
 
@@ -202,8 +225,9 @@ export default function SetGameAccountForm() {
             </div>
 
             {/* Tags */}
-            <AppendList list={formData.tags} setList={(list: string[]) => setList(list, 'tags')} title={"Tags"} />
-            <AppendList list={formData.features} setList={(list: string[]) => setList(list, 'features')} title={"Tính năng nổi bật"} />
+            <AppendList list={formData.tags} setList={(list: string[]) => setList(list, 'tags')} title={"Tags"}/>
+            <AppendList list={formData.features} setList={(list: string[]) => setList(list, 'features')}
+                        title={"Tính năng nổi bật"}/>
 
             {/* Warranty */}
             <div className="space-y-2">
@@ -248,9 +272,10 @@ export default function SetGameAccountForm() {
           </form>
         </div>
         <div className="mt-5 shadow-2xl">
-          <MultiUpload handleSubmit={handleUpload} availableImages={images} handleDelete={handleDeleteImage} />
+          <MultiUpload handleSubmit={handleUpload} availableImages={images} handleDelete={handleDeleteImage}/>
         </div>
       </div>
+      {isModalOpen && <ModalAccountInfo accountId={id} closeAction={() => setIsModalOpen(false)} />}
     </div>
   );
 }
