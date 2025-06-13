@@ -13,7 +13,6 @@ export async function GET(
     })
     if(!res.ok) return new NextResponse(JSON.stringify({ account: null }), { status: res.status });
     const {data} = await res.json();
-
     return new NextResponse(JSON.stringify({ account: data }), {status: 200});
   } catch (error) {
     return new NextResponse(JSON.stringify({ account: null }), { status: 500 });

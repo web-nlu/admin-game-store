@@ -33,7 +33,7 @@ export default function UpdateStatusButton(props: Props) {
   return (
     <div className="flex space-x-1">
       {(Object.keys(statusConfig) as StatusType[]).map((status) => {
-        if (status === props.status) return null;
+        if (status.toLowerCase() === props.status.toLowerCase()) return null;
 
         const targetConfig = statusConfig[status];
         return (

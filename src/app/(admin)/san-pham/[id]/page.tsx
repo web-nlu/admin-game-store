@@ -1,7 +1,7 @@
 'use client'
 
 import React, {useEffect, useState} from 'react';
-import {Save, Gamepad2, Eye} from 'lucide-react';
+import {Save, Gamepad2, Eye, MessageCircle} from 'lucide-react';
 import {useParams} from "next/navigation";
 import {useCategoryStore} from "@/services/categories/categoriesService";
 import {useGameStore} from "@/services/games/gamesService";
@@ -16,11 +16,14 @@ import BasicInfoForm from "@/components/accounts/setAccounts/BasicInfoForm";
 import PriceForm from "@/components/accounts/setAccounts/PriceForm";
 import ModalAccountInfo from "@/components/accounts/ModalAccountInfo";
 import UpdateStatusButton from "@/components/accounts/UpdateStatusButton";
+import ReviewsModal from "@/components/reviews/reviewsModal";
+import {Comment} from "postcss";
 
 export default function SetGameAccountForm() {
   const { id } = useParams<{id: string}>();
   const [images, setImages] = useState([])
   const [isModalOpen, setIsModalOpen] = useState(false);
+  const [reviewModalOpen, setReviewModalOpen] = useState(false);
   const [status, setStatus] = useState("pending");
 
   const [formData, setFormData] = useState({
@@ -166,8 +169,19 @@ export default function SetGameAccountForm() {
               <Eye className="w-4 h-4 mr-2"/>
               Chỉnh sửa thông tin
             </button>
-            <UpdateStatusButton handleChange={setStatusAccount} status={status} />
+            <UpdateStatusButton handleChange={setStatusAccount} status={status}/>
           </div>
+          <div className="flex flex-row gap-5 mb-3">
+            <button
+              type="button"
+              onClick={() => setReviewModalOpen(true)}
+              className="cursor-pointer inline-flex items-center px-4 py-2 bg-blue-600 text-white rounded-lg hover:bg-blue-700 transition-colors"
+            >
+              <MessageCircle className="w-4 h-4 mr-2"/>
+              Đánh giá sản phẩm
+            </button>
+          </div>
+
 
           <form onSubmit={handleSubmit} className="space-y-6">
             {/* Basic Information */}
@@ -175,107 +189,108 @@ export default function SetGameAccountForm() {
 
             <ChooseGameForm gameId={formData.gameId} handleChangeGame={(value: string) => setFormData((prev) => ({
               ...prev,
-              gameId: value
-            }))}/>
+                gameId: value
+              }))}/>
 
-            {/* Price Information */}
-            <PriceForm price={formData.price} salePrice={formData.salePrice} level={formData.level}
-                       handleInputChange={handleInputChange}/>
+              {/* Price Information */}
+              <PriceForm price={formData.price} salePrice={formData.salePrice} level={formData.level}
+                         handleInputChange={handleInputChange}/>
 
-            {/* Image */}
-            <div className="space-y-2">
-              <label className="block text-sm font-semibold text-gray-700">
-                Hình ảnh đại diện <span className="text-red-500">*</span>
-              </label>
-              <SingleUpload
-                image={formData.image}
-                handleInputChange={(value: string) =>
-                  setFormData((prev) => ({...prev, image: value}))}
-              />
-            </div>
+              {/* Image */}
+              <div className="space-y-2">
+                <label className="block text-sm font-semibold text-gray-700">
+                  Hình ảnh đại diện <span className="text-red-500">*</span>
+                </label>
+                <SingleUpload
+                  image={formData.image}
+                  handleInputChange={(value: string) =>
+                    setFormData((prev) => ({...prev, image: value}))}
+                />
+              </div>
 
-            {/* Info */}
-            <div className="space-y-2">
-              <label className="block text-sm font-semibold text-gray-700">
-                Thông tin tài khoản
-              </label>
-              <textarea
-                name="info"
-                value={formData.info}
-                onChange={handleInputChange}
-                rows={3}
-                className="w-full px-4 py-3 border border-gray-300 rounded-md focus:ring-2 focus:ring-orange-500 focus:border-transparent transition-all duration-200 resize-none"
-                placeholder="Thông tin chi tiết về tài khoản (username, rank, skin, v.v.)"
-              />
-            </div>
+              {/* Info */}
+              <div className="space-y-2">
+                <label className="block text-sm font-semibold text-gray-700">
+                  Thông tin tài khoản
+                </label>
+                <textarea
+                  name="info"
+                  value={formData.info}
+                  onChange={handleInputChange}
+                  rows={3}
+                  className="w-full px-4 py-3 border border-gray-300 rounded-md focus:ring-2 focus:ring-orange-500 focus:border-transparent transition-all duration-200 resize-none"
+                  placeholder="Thông tin chi tiết về tài khoản (username, rank, skin, v.v.)"
+                />
+              </div>
 
-            {/* Description */}
-            <div className="space-y-2">
-              <label className="block text-sm font-semibold text-gray-700">
-                Mô tả chi tiết
-              </label>
-              <textarea
-                name="description"
-                value={formData.description}
-                onChange={handleInputChange}
-                rows={4}
-                className="w-full px-4 py-3 border border-gray-300 rounded-md focus:ring-2 focus:ring-orange-500 focus:border-transparent transition-all duration-200 resize-none"
-                placeholder="Mô tả chi tiết về tài khoản, ưu điểm, đặc điểm nổi bật..."
-              />
-            </div>
+              {/* Description */}
+              <div className="space-y-2">
+                <label className="block text-sm font-semibold text-gray-700">
+                  Mô tả chi tiết
+                </label>
+                <textarea
+                  name="description"
+                  value={formData.description}
+                  onChange={handleInputChange}
+                  rows={4}
+                  className="w-full px-4 py-3 border border-gray-300 rounded-md focus:ring-2 focus:ring-orange-500 focus:border-transparent transition-all duration-200 resize-none"
+                  placeholder="Mô tả chi tiết về tài khoản, ưu điểm, đặc điểm nổi bật..."
+                />
+              </div>
 
-            {/* Tags */}
-            <AppendList list={formData.tags} setList={(list: string[]) => setList(list, 'tags')} title={"Tags"}/>
-            <AppendList list={formData.features} setList={(list: string[]) => setList(list, 'features')}
-                        title={"Tính năng nổi bật"}/>
+              {/* Tags */}
+              <AppendList list={formData.tags} setList={(list: string[]) => setList(list, 'tags')} title={"Tags"}/>
+              <AppendList list={formData.features} setList={(list: string[]) => setList(list, 'features')}
+                          title={"Tính năng nổi bật"}/>
 
-            {/* Warranty */}
-            <div className="space-y-2">
-              <label className="block text-sm font-semibold text-gray-700">
-                Chính sách bảo hành
-              </label>
-              <select
-                name="warranty"
-                value={formData.warranty}
-                onChange={handleInputChange}
-                className="w-full px-4 py-3 border border-gray-300 rounded-md focus:ring-2 focus:ring-orange-500 focus:border-transparent transition-all duration-200"
-              >
-                <option value="">Chọn chính sách bảo hành</option>
-                <option value="7 ngày">7 ngày</option>
-                <option value="15 ngày">15 ngày</option>
-                <option value="30 ngày">30 ngày</option>
-                <option value="Vĩnh viễn">Vĩnh viễn</option>
-                <option value="Không bảo hành">Không bảo hành</option>
-              </select>
-            </div>
+              {/* Warranty */}
+              <div className="space-y-2">
+                <label className="block text-sm font-semibold text-gray-700">
+                  Chính sách bảo hành
+                </label>
+                <select
+                  name="warranty"
+                  value={formData.warranty}
+                  onChange={handleInputChange}
+                  className="w-full px-4 py-3 border border-gray-300 rounded-md focus:ring-2 focus:ring-orange-500 focus:border-transparent transition-all duration-200"
+                >
+                  <option value="">Chọn chính sách bảo hành</option>
+                  <option value="7 ngày">7 ngày</option>
+                  <option value="15 ngày">15 ngày</option>
+                  <option value="30 ngày">30 ngày</option>
+                  <option value="Vĩnh viễn">Vĩnh viễn</option>
+                  <option value="Không bảo hành">Không bảo hành</option>
+                </select>
+              </div>
 
-            {/* Submit Button */}
-            <div className="pt-6">
-              <button
-                type="submit"
-                disabled={isSubmitting}
-                className="w-full bg-gradient-to-r from-orange-500 to-red-500 text-white font-semibold py-4 px-6 rounded-md hover:from-orange-600 hover:to-red-600 focus:ring-4 focus:ring-orange-200 transition-all duration-200 flex items-center justify-center space-x-2 disabled:opacity-50 disabled:cursor-not-allowed"
-              >
-                {isSubmitting ? (
-                  <>
-                    <div className="animate-spin rounded-full h-5 w-5 border-b-2 border-white"></div>
-                    <span>Đang xử lý...</span>
-                  </>
-                ) : (
-                  <>
-                    <Save className="w-5 h-5"/>
-                    <span>Cập nhật Tài Khoản Game</span>
-                  </>
-                )}
-              </button>
-            </div>
-          </form>
+              {/* Submit Button */}
+              <div className="pt-6">
+                <button
+                  type="submit"
+                  disabled={isSubmitting}
+                  className="w-full bg-gradient-to-r from-orange-500 to-red-500 text-white font-semibold py-4 px-6 rounded-md hover:from-orange-600 hover:to-red-600 focus:ring-4 focus:ring-orange-200 transition-all duration-200 flex items-center justify-center space-x-2 disabled:opacity-50 disabled:cursor-not-allowed"
+                >
+                  {isSubmitting ? (
+                    <>
+                      <div className="animate-spin rounded-full h-5 w-5 border-b-2 border-white"></div>
+                      <span>Đang xử lý...</span>
+                    </>
+                  ) : (
+                    <>
+                      <Save className="w-5 h-5"/>
+                      <span>Cập nhật Tài Khoản Game</span>
+                    </>
+                  )}
+                </button>
+              </div>
+            </form>
+          </div>
+          <div className="mt-5 shadow-2xl">
+            <MultiUpload handleSubmit={handleUpload} availableImages={images} handleDelete={handleDeleteImage}/>
+          </div>
         </div>
-        <div className="mt-5 shadow-2xl">
-          <MultiUpload handleSubmit={handleUpload} availableImages={images} handleDelete={handleDeleteImage}/>
-        </div>
-      </div>
-      {isModalOpen && <ModalAccountInfo accountId={id} closeAction={() => setIsModalOpen(false)} />}
+        {isModalOpen && <ModalAccountInfo accountId={id} closeAction={() => setIsModalOpen(false)}/>}
+      {reviewModalOpen && <ReviewsModal accountId={id} closeAction={() => setReviewModalOpen(false)} />}
     </div>
   );
 }

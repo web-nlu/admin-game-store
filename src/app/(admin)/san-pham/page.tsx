@@ -18,7 +18,7 @@ const AccountManagementDashboard = () => {
   // const [categories, setCategories] = useState([] as Category[]);
   const {categories, getCategories} = useCategoryStore()
   const {games, getGames} = useGameStore()
-  const {accounts, filter, totalAccounts, deleteAccount} = useAccountStore()
+  const {accounts, filter, totalAccounts} = useAccountStore()
   const onFilter = (key: string, value: string) => {
     if(value === "0") {
       delete params[key];
@@ -134,16 +134,6 @@ const AccountManagementDashboard = () => {
             </div>
 
             <div className="flex space-x-2">
-              {/*<button*/}
-              {/*  className="flex items-center px-4 py-2 text-gray-600 border rounded-md hover:bg-gray-50 transition-colors">*/}
-              {/*  <Download className="w-4 h-4 mr-2"/>*/}
-              {/*  Export*/}
-              {/*</button>*/}
-              {/*<button*/}
-              {/*  className="flex items-center px-4 py-2 text-gray-600 border rounded-md hover:bg-gray-50 transition-colors">*/}
-              {/*  <Upload className="w-4 h-4 mr-2"/>*/}
-              {/*  Import*/}
-              {/*</button>*/}
               <Link
                 href={"/san-pham/add"}
                 className="flex items-center px-4 py-2 bg-blue-600 text-white rounded-md hover:bg-blue-700 transition-colors"
