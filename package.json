@@ -10,8 +10,10 @@
   },
   "dependencies": {
     "@types/lodash": "^4.17.17",
+    "dayjs": "^1.11.13",
     "lodash": "^4.17.21",
     "lucide-react": "^0.511.0",
+    "moment": "^2.30.1",
     "next": "15.3.2",
     "next-cloudinary": "^6.16.0",
     "react": "^19.0.0",
@@ -19,6 +21,8 @@
     "react-hot-toast": "^2.5.2",
     "react-intersection-observer": "^9.16.0",
     "react-loading-indicators": "^1.0.1",
+    "react-tailwindcss-datepicker": "^2.0.0",
+    "recharts": "^2.15.3",
     "zustand": "^5.0.5"
   },
   "devDependencies": {

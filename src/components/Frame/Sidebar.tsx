@@ -1,5 +1,5 @@
 'use client'
-import {CreditCard, Gamepad2, Home, ShoppingCart, Users, Package, BarChart3, Shield, Settings} from "lucide-react";
+import {Gamepad2, Home, ShoppingCart, Users, Package, BarChart3, Settings} from "lucide-react";
 import {useState} from "react";
 import {useSidebarStore} from "@/services/sidebarService";
 import {useRouter} from "next/navigation";
@@ -10,9 +10,7 @@ const menuItems = [
   { id: 'categories', label: 'Danh mục', icon: Package, href: '/danh-muc' },
   { id: 'orders', label: 'Đơn hàng', icon: ShoppingCart, href: '/don-hang' },
   { id: 'customers', label: 'Khách hàng', icon: Users, href: '/customers' },
-  { id: 'payments', label: 'Thanh toán', icon: CreditCard, href: '/payments' },
-  { id: 'analytics', label: 'Thống kê', icon: BarChart3, href: '/analytics' },
-  { id: 'security', label: 'Bảo mật', icon: Shield, href: '/security' },
+  { id: 'analytics', label: 'Thống kê', icon: BarChart3, href: '/thong-ke' },
   { id: 'settings', label: 'Cài đặt', icon: Settings, href: '/settings' },
 ];
 

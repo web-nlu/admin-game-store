@@ -17,7 +17,6 @@ import PriceForm from "@/components/accounts/setAccounts/PriceForm";
 import ModalAccountInfo from "@/components/accounts/ModalAccountInfo";
 import UpdateStatusButton from "@/components/accounts/UpdateStatusButton";
 import ReviewsModal from "@/components/reviews/reviewsModal";
-import {Comment} from "postcss";
 
 export default function SetGameAccountForm() {
   const { id } = useParams<{id: string}>();

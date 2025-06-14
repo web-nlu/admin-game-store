@@ -23,3 +23,12 @@ export function getCookie(name: string, cookie: string): string | null {
   const match = cookie.match(new RegExp('(^| )' + name + '=([^;]+)'));
   return match ? match[2] : null;
 }
+
+export function formatShortCurrency(amount: number): string {
+  if (amount >= 1000000000) {
+    return (amount / 1000000000).toFixed(1) + 'B';
+  } else if (amount >= 1000000) {
+    return (amount / 1000000).toFixed(1) + 'M';
+  }
+  return formatPrice(amount);
+};
