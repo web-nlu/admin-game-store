@@ -3,21 +3,24 @@ import {Gamepad2, Home, ShoppingCart, Users, Package, BarChart3, Settings} from 
 import {useState} from "react";
 import {useSidebarStore} from "@/services/sidebarService";
 import {useRouter} from "next/navigation";
+import {useUserStore} from "@/services/user/userService";
+import _ from "lodash";
 
 const menuItems = [
   { id: 'dashboard', label: 'Dashboard', icon: Home, href: '/' },
-  { id: 'accounts', label: 'Tài khoản Game', icon: Gamepad2, href: '/san-pham' },
+  { id: 'accounts', label: 'Sản phẩm', icon: Gamepad2, href: '/san-pham' },
   { id: 'categories', label: 'Danh mục', icon: Package, href: '/danh-muc' },
   { id: 'orders', label: 'Đơn hàng', icon: ShoppingCart, href: '/don-hang' },
-  { id: 'customers', label: 'Khách hàng', icon: Users, href: '/customers' },
-  { id: 'analytics', label: 'Thống kê', icon: BarChart3, href: '/thong-ke' },
-  { id: 'settings', label: 'Cài đặt', icon: Settings, href: '/settings' },
+  { id: 'employees', label: 'Nhân viên', icon: Users, href: '/nhan-vien', role: "ADMIN" },
+  { id: 'analytics', label: 'Thống kê', icon: BarChart3, href: '/thong-ke', role: "ADMIN" },
+  { id: 'settings', label: 'Cài đặt', icon: Settings, href: '/settings', role: "ADMIN" },
 ];
 
 export default function Sidebar() {
   const [activeItem, setActiveItem] = useState('dashboard');
   const { isOpen, closeSidebar } = useSidebarStore();
   const router = useRouter();
+  const {user} = useUserStore();
   const handleMenuClick = (itemId: string, href: string) => {
     setActiveItem(itemId);
     closeSidebar();
@@ -49,7 +52,9 @@ export default function Sidebar() {
           {menuItems.map((item) => {
             const Icon = item.icon;
             const isActive = activeItem === item.id;
-
+            if(item.role && !_.some(user?.activeRoles, ["name", item.role])) {
+              return
+            }
             return (
               <li key={item.id}>
                 <button
@@ -70,23 +75,6 @@ export default function Sidebar() {
           })}
         </ul>
       </nav>
-
-      {/* Quick Stats */}
-      {/*<div className="absolute bottom-4 left-3 right-3">*/}
-      {/*  <div className="bg-gradient-to-r from-blue-500 to-purple-600 rounded-lg p-4 text-white">*/}
-      {/*    <h3 className="text-sm font-medium mb-2">Thống kê nhanh</h3>*/}
-      {/*    <div className="space-y-1 text-xs">*/}
-      {/*      <div className="flex justify-between">*/}
-      {/*        <span>Đơn hàng hôm nay</span>*/}
-      {/*        <span className="font-semibold">25</span>*/}
-      {/*      </div>*/}
-      {/*      <div className="flex justify-between">*/}
-      {/*        <span>Doanh thu</span>*/}
-      {/*        <span className="font-semibold">5.2M VNĐ</span>*/}
-      {/*      </div>*/}
-      {/*    </div>*/}
-      {/*  </div>*/}
-      {/*</div>*/}
     </aside>
   )
 }

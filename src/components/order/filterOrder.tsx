@@ -1,18 +1,17 @@
 'use client'
 import {ChevronDown, Search} from "lucide-react";
 import _ from "lodash";
-import {filterOrderStore} from "@/services/order/filterOrderService";
 import {useOrderStore} from "@/services/order/orderService";
 
 export default function FilterOrder() {
-  const {params, setParams} = filterOrderStore()
-  const {clearOrders} = useOrderStore();
+  const {clearOrders, params, setParams } = useOrderStore();
   const onFilter = (key: string, value: string) => {
     if(_.isEmpty(value)) {
       delete params[key]
     }else {
       params[key] = value;
     }
+    params["page"] = "1";
     setParams(_.cloneDeep(params));
     clearOrders();
   }

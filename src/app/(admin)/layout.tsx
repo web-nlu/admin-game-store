@@ -7,6 +7,7 @@ import {Toaster} from "react-hot-toast";
 import {cookies} from "next/headers";
 import {redirect} from "next/navigation";
 import _ from "lodash";
+import {RolesIndex} from "@/utils/role";
 
 const geistSans = Geist({
   variable: "--font-geist-sans",
@@ -44,7 +45,8 @@ export default async function RootLayout({
 
   const {user} = await result.json();
 
-  const isAdmin = _.some(user.activeRoles || [], ["name", "ADMIN"])
+  const isAdmin = _.some(user.activeRoles || [],
+    (element) => !!RolesIndex[element.name])
   if(!isAdmin) {
     redirect("/dang-nhap")
   }

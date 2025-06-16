@@ -1,6 +1,9 @@
 'use client'
-import {Bell, Gamepad2, LogOut, Menu, User} from "lucide-react";
+import {Gamepad2, Menu} from "lucide-react";
 import {useSidebarStore} from "@/services/sidebarService";
+import {useEffect} from "react";
+import {useUserStore} from "@/services/user/userService";
+import ProfileButton from "@/components/common/ProfileButton";
 
 type Props = {
   user: UserInfo
@@ -9,6 +12,10 @@ type Props = {
 export default function Appbar({user}: Props) {
 
   const { toggleSidebar } = useSidebarStore();
+  const {setUser} = useUserStore()
+  useEffect(() => {
+    setUser(user)
+  }, [JSON.stringify(user)])
 
   return (
     <header className="bg-white shadow-sm border-b border-gray-200 fixed w-full top-0 z-50">
@@ -34,29 +41,7 @@ export default function Appbar({user}: Props) {
         </div>
 
         {/* Right side */}
-        <div className="flex items-center space-x-3">
-          <button className="p-2 rounded-full hover:bg-gray-100 relative">
-            <Bell className="h-5 w-5 text-gray-600"/>
-            <span
-              className="absolute -top-1 -right-1 h-4 w-4 bg-red-500 rounded-full text-xs text-white flex items-center justify-center">
-                3
-              </span>
-          </button>
-
-          <div className="flex items-center space-x-2">
-            <div className="w-8 h-8 bg-gray-300 rounded-full flex items-center justify-center">
-              <User className="h-5 w-5 text-gray-600"/>
-            </div>
-            <div className="hidden sm:block">
-              <p className="text-sm font-medium text-gray-900">{user.username}</p>
-              <p className="text-xs text-gray-500">{user.email}</p>
-            </div>
-          </div>
-
-          <button className="p-2 rounded-md hover:bg-gray-100 text-gray-600">
-            <LogOut className="h-5 w-5"/>
-          </button>
-        </div>
+        <ProfileButton />
       </div>
     </header>
   )

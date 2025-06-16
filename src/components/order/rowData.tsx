@@ -7,6 +7,8 @@ import React from "react";
 import {useRouter} from "next/navigation";
 import {getStatusIcon} from "@/components/order/getStatusIcon";
 import ActionOrderButton from "@/components/order/actionButton";
+import {useUserStore} from "@/services/user/userService";
+import _ from "lodash";
 
 type Props = {
   order: Order
@@ -14,7 +16,7 @@ type Props = {
 
 export default function RowData({ order }: Props) {
   const router = useRouter();
-
+  const {user} = useUserStore();
   return (
     <tr key={order.id} className="hover:bg-gray-50">
       <td className="px-6 py-4 whitespace-nowrap">
@@ -55,7 +57,7 @@ export default function RowData({ order }: Props) {
                 className="cursor-pointer text-blue-600 hover:text-blue-900 transition-colors">
           <Eye className="w-4 h-4"/>
         </button>
-        { order.status !== "COMPLETED" &&  <ActionOrderButton order={order} /> }
+        { (_.some(user?.activeRoles, ["name", "ADMIN"]) && (order.status !== "COMPLETED")) &&  <ActionOrderButton order={order} /> }
       </td>
     </tr>
   )

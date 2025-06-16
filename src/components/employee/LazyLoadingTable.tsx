@@ -1,27 +1,21 @@
 'use client'
 import React, {useEffect} from "react";
 import {useInView} from "react-intersection-observer";
-import RowData from "@/components/order/rowData";
-import {useOrderStore} from "@/services/order/orderService";
-import {Eye, Phone, User} from "lucide-react";
-import {formatPrice, formatVietnamTime} from "@/utils/utils";
-import {getStatusColor, getStatusText} from "@/utils/order";
-import {getStatusIcon} from "@/components/order/getStatusIcon";
-import ActionOrderButton from "@/components/order/actionButton";
+import RowData from "@/components/employee/RowData";
+import {useEmployeeStore} from "@/services/employee/employeeService";
 
-export default function   LazyLoadingTable() {
+export default function LazyLoadingTable() {
   const { ref, inView } = useInView();
-  const {orders, hasMore, filterOrders, page, params, setPage} = useOrderStore();
+  const {employees, hasMore, filterEmployees, params, page, setPage} = useEmployeeStore();
 
   useEffect(() => {
     if (inView && hasMore) {
-      filterOrders({page: page.toString(), ...params}).then(() => setPage());
+      filterEmployees({...params, page: page.toString()}).then(() => setPage());
     }
   }, [inView, hasMore]);
 
   return (
     <div className="max-w-7xl mx-auto px-4 py-8">
-
       <div className="bg-white min-h-[350px] rounded-xl shadow-sm border border-gray-200 overflow-hidden relative">
         <div className="bg-white min-h-[350px] rounded-xl shadow-sm border border-gray-200 overflow-hidden relative">
           <div className="overflow-x-auto">
@@ -32,36 +26,21 @@ export default function   LazyLoadingTable() {
                   className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider cursor-pointer hover:bg-gray-100"
                   // onClick={() => handleSort('id')}
                 >
-                  ID Đơn hàng
+                  ID Nhân viên
                 </th>
                 <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
-                  Khách hàng
-                </th>
-                <th
-                  className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider cursor-pointer hover:bg-gray-100"
-                  // onClick={() => handleSort('totalPrice')}
-                >
-                  Tổng tiền
+                  Ảnh
                 </th>
                 <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
-                  Trạng thái
-                </th>
-                <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
-                  Thanh toán
-                </th>
-                <th
-                  className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider cursor-pointer hover:bg-gray-100"
-                  // onClick={() => handleSort('createdAt')}
-                >
-                  Ngày tạo
+                  Email/Số điện thoại
                 </th>
                 <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
                   Hành động
                 </th>
               </tr>
               </thead>
-              <tbody className="bg-white divide-y divide-gray-200 pb-10">
-              {orders.map((order: Order) => <RowData key={order.id} order={order}/>)}
+              <tbody className="bg-white divide-y divide-gray-200">
+              {employees.map((employee: Employee) => <RowData key={employee.id} employee={employee}/>)}
               </tbody>
             </table>
             {hasMore && (

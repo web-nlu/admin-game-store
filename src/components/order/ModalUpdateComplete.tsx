@@ -12,14 +12,14 @@ export default function ModalUpdateComplete() {
     status: "COMPLETED",
     paymentMethod: "BANK"
   };
-  const modalRef = useRef(null);
+  const modalRef = useRef<HTMLDivElement>(null);
   const {closeModal} = useModalUpdateCompleteStore()
   const {clear, order} = useCurrentOrderStore();
 
   // Đóng modal khi click ra ngoài
   useEffect(() => {
     const handleClickOutside = (event: MouseEvent) => {
-      if (modalRef.current && !modalRef.current.contains(event.target)) {
+      if (modalRef.current && !modalRef.current.contains(event.target as Node)) {
         closeModal();
         clear();
       }
