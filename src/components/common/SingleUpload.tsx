@@ -19,7 +19,11 @@ export default function SingleUpload({ handleInputChange, image = "" }: Props) {
     <div className="flex items-center space-x-4">
       <CldUploadWidget
         uploadPreset="pujjdcar"
-        options={{multiple: false}}
+        options={{
+          multiple: false,
+          folder: "products",
+          sources: ["local", "google_drive"]
+        }}
         onSuccess={(result, { widget }) => {
           setPublicId((result.info as CloudinaryUploadWidgetInfo ).public_id || "");
           handleInputChange((result.info as CloudinaryUploadWidgetInfo ).public_id || "");

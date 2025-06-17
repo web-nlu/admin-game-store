@@ -5,11 +5,11 @@ import {Save, Upload} from "lucide-react";
 
 type Props = {
   availableImages: ImageDetail[],
-  handleSubmit: (images: ImageDetail[]) => Promise<void>,
-  handleDelete: (id: number) => Promise<boolean>,
+  handleSubmitAction: (images: ImageDetail[]) => Promise<void>,
+  handleDeleteAction: (id: number) => Promise<boolean>,
 }
 
-export default function MultiUpload({availableImages, handleSubmit, handleDelete}: Props) {
+export default function MultiUpload({availableImages, handleSubmitAction, handleDeleteAction}: Props) {
   let publicIds: string[] = [];
   const [images, setImages] = useState<ImageDetail[]>([]);
   const [startPos, setStartPos] = useState<number | null>(null);
@@ -22,7 +22,7 @@ export default function MultiUpload({availableImages, handleSubmit, handleDelete
 
   const onSubmit = async () => {
     setIsSubmitting(true);
-    await handleSubmit(images)
+    await handleSubmitAction(images)
     setIsSubmitting(false);
   }
 
@@ -30,7 +30,7 @@ export default function MultiUpload({availableImages, handleSubmit, handleDelete
   const handleDeleteImage = async (index: number) => {
     setIsSubmitting(true);
     if(images[index].id){
-      const result = await handleDelete(images[index].id)
+      const result = await handleDeleteAction(images[index].id)
       if(!result) {
         setIsSubmitting(false);
         return
@@ -105,7 +105,6 @@ export default function MultiUpload({availableImages, handleSubmit, handleDelete
                   image,
                   position: prev.length + index + 1
                 }));
-                console.log(newImages);
                 return [...prev, ...newImages];
               })
 

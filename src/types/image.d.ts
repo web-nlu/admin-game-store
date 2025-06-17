@@ -1,9 +1,9 @@
 type ImageDetail = {
-  id: number;
+  id?: number;
   position: number;
   image: string;
-  entity: string;
-  entityId: number;
+  entity?: string;
+  entityId?: number;
 }
 
 type ImageDto = {

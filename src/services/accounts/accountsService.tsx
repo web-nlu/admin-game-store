@@ -48,7 +48,7 @@ export const useAccountStore = create<AccountStore>((set) => ({
         },
       })
       const { content: accounts, totalElements } = (await requestAccounts.json());
-      set({accounts: accounts, totalAccounts: totalElements});
+      set({accounts: accounts || [], totalAccounts: totalElements});
     } catch (e) {
       toast.error((e as Error).message);
     } finally {

@@ -1,6 +1,6 @@
 'use client'
 
-import React, {useEffect, useState} from 'react';
+import React, {ChangeEvent, FormEvent, useEffect, useState} from 'react';
 import {Save, Gamepad2, Eye, MessageCircle} from 'lucide-react';
 import {useParams} from "next/navigation";
 import {useCategoryStore} from "@/services/categories/categoriesService";
@@ -77,7 +77,7 @@ export default function SetGameAccountForm() {
   const {categories, getCategories} = useCategoryStore()
   const {getGames} = useGameStore()
 
-  const handleInputChange = (e) => {
+  const handleInputChange = (e: ChangeEvent<HTMLInputElement | HTMLTextAreaElement | HTMLSelectElement>) => {
     const { name, value } = e.target;
     setFormData(prev => ({
       ...prev,
@@ -92,7 +92,7 @@ export default function SetGameAccountForm() {
     }))
   }
 
-  const handleSubmit = async (e) => {
+  const handleSubmit = async (e: FormEvent) => {
     e.preventDefault();
     setIsSubmitting(true);
     await updateAccount(parseInt(id), formData)
@@ -285,7 +285,7 @@ export default function SetGameAccountForm() {
             </form>
           </div>
           <div className="mt-5 shadow-2xl">
-            <MultiUpload handleSubmit={handleUpload} availableImages={images} handleDelete={handleDeleteImage}/>
+            <MultiUpload handleSubmitAction={handleUpload} availableImages={images} handleDeleteAction={handleDeleteImage}/>
           </div>
         </div>
         {isModalOpen && <ModalAccountInfo accountId={id} closeAction={() => setIsModalOpen(false)}/>}

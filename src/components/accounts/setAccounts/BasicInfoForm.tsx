@@ -3,7 +3,7 @@ import React from "react";
 type BasicInfoFormProps = {
   title: string;
   server: string;
-  handleInputChange: (e: React.ChangeEvent) => void;
+  handleInputChange: (e: React.ChangeEvent<HTMLInputElement | HTMLSelectElement>) => void;
 }
 
 export default function BasicInfoForm({title, server, handleInputChange}: BasicInfoFormProps) {
