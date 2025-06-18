@@ -1,6 +1,6 @@
 'use client'
 
-import React, {useEffect, useState} from 'react';
+import React, {FormEvent, useEffect, useState} from 'react';
 import { Upload, Save, Gamepad2 } from 'lucide-react';
 import {useCategoryStore} from "@/services/categories/categoriesService";
 import _ from "lodash";
@@ -9,6 +9,8 @@ import {useAccountStore} from "@/services/accounts/accountsService";
 import ChooseGameForm from "@/components/accounts/setAccounts/ChooseGameForm";
 import BasicInfoForm from "@/components/accounts/setAccounts/BasicInfoForm";
 import PriceForm from "@/components/accounts/setAccounts/PriceForm";
+import {ElementFormChangeEvent} from "@/types/common";
+import Image from "next/image";
 
 export default function SetGameAccountForm() {
   const [formData, setFormData] = useState({
@@ -36,7 +38,7 @@ export default function SetGameAccountForm() {
     }
   }, [])
 
-  const handleInputChange = (e) => {
+  const handleInputChange = (e: ElementFormChangeEvent) => {
     const { name, value } = e.target;
     setFormData(prev => ({
       ...prev,
@@ -51,7 +53,7 @@ export default function SetGameAccountForm() {
     }))
   }
 
-  const handleSubmit = async (e) => {
+  const handleSubmit = async (e: FormEvent) => {
     e.preventDefault();
     setIsSubmitting(true);
     await createAccount(formData)
@@ -114,13 +116,10 @@ export default function SetGameAccountForm() {
               </div>
               {formData.image && (
                 <div className="mt-2">
-                  <img
+                  <Image
                     src={formData.image}
                     alt="Preview"
                     className="w-32 h-32 object-cover rounded-lg border"
-                    onError={(e) => {
-                      e.target.style.display = 'none';
-                    }}
                   />
                 </div>
               )}

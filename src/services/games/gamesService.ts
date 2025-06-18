@@ -6,9 +6,9 @@ type GameStore = {
   games: Game[];
   loading: boolean;
   getGames: (categoryId: string) => Promise<void>;
-  createGame: (game: Omit<Game, 'id'>) => Promise<void>;
-  updateGame: (id: number, game: Omit<Game, 'id'>) => Promise<void>;
+  updateGame: (categoryId: number, game: Game[]) => Promise<void>;
   deleteGame: (id: number) => Promise<void>;
+  clearGame: () => void;
 };
 
 export const useGameStore = create<GameStore>((set) => ({
@@ -27,37 +27,10 @@ export const useGameStore = create<GameStore>((set) => ({
       set({ loading: false });
     }
   },
-
-  createGame: async (game: Omit<Game, 'id'>) => {
+  updateGame: async (categoryId: number, data: Game[]) => {
     set({ loading: true });
     try {
-      const res = await fetch(`/api/games`, {
-        method: 'POST',
-        headers: {
-          'Content-Type': 'application/json'
-        },
-        body: JSON.stringify(game)
-      });
-
-      const {game: newGame, message} = await res.json();
-
-      if (!res.ok) throw new Error(message);
-
-      // Thêm vào state hoặc gọi lại getGames()
-      set((state) => ({
-        games: [...state.games, newGame]
-      }));
-      toast.success(message)
-    } catch (err) {
-      toast.error((err as Error).message);
-    } finally {
-      set({ loading: false });
-    }
-  },
-  updateGame: async (id: number, data: Omit<Game, 'id'>) => {
-    set({ loading: true });
-    try {
-      const res = await fetch(`/api/games/${id}`, {
+      const res = await fetch(`/api/games/${categoryId}`, {
         method: 'PUT', // hoặc PATCH tùy backend bạn
         headers: {
           'Content-Type': 'application/json'
@@ -65,14 +38,10 @@ export const useGameStore = create<GameStore>((set) => ({
         body: JSON.stringify(data)
       });
 
-      const {game, message} = await res.json();
+      const {games, message} = await res.json();
 
       if (!res.ok) throw new Error(message);
-      set((state) => ({
-        games: state.games.map((cat) =>
-          cat.id === id ? {id, ...game} : cat
-        )
-      }));
+      set({games: games})
       toast.success(message)
     } catch (err) {
       toast.error((err as Error).message);
@@ -84,7 +53,7 @@ export const useGameStore = create<GameStore>((set) => ({
   deleteGame: async (id: number) => {
     set({ loading: true });
     try {
-      const res = await fetch(`/api/games/${id}`, {
+      const res = await fetch(`/api/games/delete/${id}`, {
         method: 'DELETE'
       });
       const {message} = await res.json();
@@ -99,5 +68,6 @@ export const useGameStore = create<GameStore>((set) => ({
     } finally {
       set({ loading: false });
     }
-  }
+  },
+  clearGame: () => set({ loading: false, games: [] })
 }));

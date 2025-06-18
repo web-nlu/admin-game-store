@@ -21,7 +21,7 @@ export const useAccountInfoStore = create<AccountStore>((set) => ({
     try {
       const res = await fetch(`/api/accountInfo/${accountId}`, { cache: 'no-store' });
       const data = await res.json();
-      set({ currentAccountInfo: data.info });
+      set({ currentAccountInfo: data.info || {} as AccountInfo });
     } catch (err) {
       toast.error((err as Error).message);
     } finally {

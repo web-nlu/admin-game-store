@@ -1,4 +1,5 @@
 import {NextRequest, NextResponse} from "next/server";
+import {getCookie} from "@/utils/utils";
 
 export async function PUT(
   req: NextRequest,
@@ -6,7 +7,8 @@ export async function PUT(
 ) {
   const { id } = await params;
   try {
-    const token = req.cookies.get("token")?.value;
+    const header = req.headers;
+    const token = req.cookies.get("token")?.value || getCookie("token", header.get("Set-Cookie") ?? "");
     const body = await req.json();
     const res = await fetch(`${process.env.NEXT_PUBLIC_SERVER_HOST}/api/admin/category/update/${id}`, {
       method: 'PUT',
@@ -29,7 +31,8 @@ export async function DELETE(
   req: NextRequest,
   { params }: { params: Promise<{ id: string }> }
 ) {
-  const token = req.cookies.get("token")?.value;
+  const header = req.headers;
+  const token = req.cookies.get("token")?.value || getCookie("token", header.get("Set-Cookie") ?? "");
   const { id } = await params;
   try {
     const res = await fetch(`${process.env.NEXT_PUBLIC_SERVER_HOST}/api/admin/category/delete/${id}`, {

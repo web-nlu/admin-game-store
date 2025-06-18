@@ -51,7 +51,7 @@ export default function ProfileButton() {
         className="flex items-center gap-2 group focus:outline-none cursor-pointer"
       > {
           user?.avatar ? (
-            <CldImage alt={"Avatar user"} src={user.avatar} width={40} height={40} className="rounded-full" />
+            <CldImage alt={"Avatar user"} src={user.avatar} width={40} height={40} crop={"fill"} className="rounded-full" />
           ) : (
             <div className="w-[40px] h-[40px] rounded-full bg-gray-100 flex items-center justify-center overflow-hidden">
               <User className="w-[20px] h-[20px] text-blue-900"/>
@@ -68,7 +68,7 @@ export default function ProfileButton() {
           <div className="flex items-center gap-2 px-4 py-2 border-b-1 border-solid border-gray-200">
             {
               user?.avatar ? (
-                <CldImage alt={"Avatar user"} src={user.avatar} width={40} height={40} className="rounded-full" />
+                <CldImage alt={"Avatar user"} src={user.avatar} width={40} height={40} crop={"fill"} className="rounded-full" />
               ) : (
                 <div className="w-[40px] h-[40px] rounded-full bg-gray-100 flex items-center justify-center overflow-hidden">
                   <User className="w-[20px] h-[20px] text-blue-900"/>

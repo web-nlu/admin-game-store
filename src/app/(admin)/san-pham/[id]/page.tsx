@@ -149,7 +149,7 @@ export default function SetGameAccountForm() {
               <Gamepad2 className="w-8 h-8 text-white" />
             </div>
             <h1 className="text-4xl font-bold bg-gradient-to-r from-orange-500 to-red-500 bg-clip-text text-transparent mb-2">
-              Thêm Tài Khoản Game Mới
+              Cập nhật tài khoản game
             </h1>
             <p className="text-gray-600 text-lg">
               Điền thông tin chi tiết để thêm tài khoản game vào cửa hàng

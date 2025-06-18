@@ -57,7 +57,7 @@ export default function ModalAccountInfo({accountId, afterSubmitAction, closeAct
               </label>
               <input
                 type="text"
-                defaultValue={currentAccountInfo.username || ""}
+                defaultValue={currentAccountInfo?.username || ""}
                 onChange={(e) => currentAccountInfo.username = e.target.value}
                 className="w-full px-3 py-2 border rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent -gray-300"
                 placeholder="Nhập username..."
@@ -69,7 +69,7 @@ export default function ModalAccountInfo({accountId, afterSubmitAction, closeAct
               </label>
               <input
                 type="text"
-                defaultValue={currentAccountInfo.email || ""}
+                defaultValue={currentAccountInfo?.email || ""}
                 onChange={(e) => currentAccountInfo.email = e.target.value}
                 className="w-full px-3 py-2 border rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent border-gray-300"
                 placeholder="Nhập email..."
@@ -81,7 +81,7 @@ export default function ModalAccountInfo({accountId, afterSubmitAction, closeAct
               </label>
               <input
                 type="text"
-                defaultValue={currentAccountInfo.password || ""}
+                defaultValue={currentAccountInfo?.password || ""}
                 onChange={(e) => currentAccountInfo.password = e.target.value}
                 className="w-full px-3 py-2 border rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent border-gray-300"
                 placeholder="Nhập password..."

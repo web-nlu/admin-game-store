@@ -1,4 +1,5 @@
 import {NextRequest, NextResponse} from "next/server";
+import {getCookie} from "@/utils/utils";
 
 export async function GET(
   req: NextRequest,
@@ -25,7 +26,8 @@ export async function PUT(
   { params }: { params: Promise<{ slug: string }> }) {
   try {
     const { slug } = await params;
-    const token = req.cookies.get("token")?.value;
+    const header = req.headers;
+    const token = req.cookies.get("token")?.value || getCookie("token", header.get("Set-Cookie") ?? "");
     const body = await req.json();
     const res = await fetch(`${process.env.NEXT_PUBLIC_SERVER_HOST}/api/admin/accounts/update-account/${slug}`, {
       method: 'PUT',
@@ -46,7 +48,8 @@ export async function DELETE(
   req: NextRequest,
   { params }: { params: Promise<{ slug: string }> }
 ) {
-  const token = req.cookies.get("token")?.value;
+  const header = req.headers;
+  const token = req.cookies.get("token")?.value || getCookie("token", header.get("Set-Cookie") ?? "");
   const { slug } = await params;
   try {
     const res = await fetch(`${process.env.NEXT_PUBLIC_SERVER_HOST}/api/admin/accounts/delete-account/${slug}`, {

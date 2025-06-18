@@ -9,7 +9,7 @@ export async function DELETE(
   const token = req.cookies.get("token")?.value || getCookie("token", header.get("Set-Cookie") ?? "");
   const { id } = await params;
   try {
-    const res = await fetch(`${process.env.NEXT_PUBLIC_SERVER_HOST}/api/admin/images/${id}`, {
+    const res = await fetch(`${process.env.NEXT_PUBLIC_SERVER_HOST}/api/admin/game/${id}`, {
       method: 'DELETE',
       headers: {
         'Authorization': `Bearer ${token}`,
