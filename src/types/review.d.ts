@@ -3,5 +3,6 @@ type Review = {
   email: string,
   rating: number,
   comment: string,
-  createdAt: number
+  createdAt: number,
+  hide: boolean
 }

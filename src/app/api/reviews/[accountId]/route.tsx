@@ -10,7 +10,9 @@ export async function GET(req: NextRequest, { params }: { params: Promise<{ acco
     if(!searchParams.get("size")) {
       searchParams.set("size", "10");
     }
-    searchParams.set("isHide", "false");
+    if(!searchParams.get("isHide")) {
+      searchParams.set("isHide", "false");
+    }
     const res = await fetch(
       `${process.env.NEXT_PUBLIC_SERVER_HOST}/api/reviews/u/get-reviews/${accountId}?${searchParams}`,
       {
@@ -21,7 +23,6 @@ export async function GET(req: NextRequest, { params }: { params: Promise<{ acco
       }
     )
     const {data, message} = await res.json();
-
     return new NextResponse(JSON.stringify({ reviews: data?.data || [], totalElements: data?.totalElements || 0, message }), {status: res.status});
   } catch (error) {
     return new NextResponse(JSON.stringify({ reviews: [], totalElements: 0, message: (error as Error).message }), { status: 500 });

@@ -1,6 +1,9 @@
-import {StarIcon} from "lucide-react";
+'use client'
+import {Eye, EyeClosed, StarIcon} from "lucide-react";
+import {useReviewStore} from "@/services/review/reviewService";
 
 export function ReviewItem(review: Review) {
+  const {setHide} = useReviewStore()
   return (
     <div className="border-b py-4 last:border-b-0 last:pb-0">
       <div className="flex my-1 gap-3">
@@ -24,6 +27,13 @@ export function ReviewItem(review: Review) {
             {new Date(review.createdAt * 1000).toLocaleDateString('vi-VN')}
           </p>
         </div>
+        <button
+          onClick={() => setHide(review.id.toString(), !review.hide)}
+          className="cursor-pointer h-fit inline-flex items-center px-3 py-1 bg-blue-100 text-blue-700 rounded-md hover:bg-blue-200 transition-colors"
+        >
+          {review.hide ? <Eye className="w-4 h-4 mr-1" /> : <EyeClosed className="w-4 h-4 mr-1" />}
+          {review.hide ? "Hiện" : "Ẩn"}
+        </button>
       </div>
     </div>
   )

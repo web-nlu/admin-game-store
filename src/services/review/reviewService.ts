@@ -8,26 +8,28 @@ type ReviewStore = {
   totalReviews: number;
   getReviews: () => Promise<void>;
   filter: (accountId: string , params: {[key: string]: string}) => Promise<void>;
-  updateStatus: (id: string, status: string) => Promise<boolean>;
+  setHide: (id: string, hidden: boolean) => Promise<boolean>;
 };
 
 export const useReviewStore = create<ReviewStore>((set) => ({
   reviews: [],
   loading: false,
   totalReviews: 0,
-  updateStatus: async (id: string, status: string)=> {
+  setHide: async (id: string, hidden: boolean = false)=> {
     set({loading: true});
     try {
-      const requestReviews = await fetch(`/api/reviews/status/${id}`, {
+      const requestReviews = await fetch(`/api/reviews/set-hide/${id}`, {
         method: 'PUT',
         headers: {
           'Content-Type': 'application/json'
         },
-        body: JSON.stringify({status})
+        body: JSON.stringify({hidden})
       })
       const { message } = (await requestReviews.json());
       toast.success(message);
-      set({loading: false});
+      set((prev) => (
+        {loading: false, reviews: prev.reviews.filter((review) =>  review.id.toString() !== id)}
+      ));
       return true;
     } catch (e) {
       toast.error((e as Error).message);
@@ -45,7 +47,6 @@ export const useReviewStore = create<ReviewStore>((set) => ({
         },
       })
       const { reviews, totalElements } = (await requestReviews.json());
-      console.log(reviews);
       set({reviews: reviews, totalReviews: totalElements});
     } catch (e) {
       toast.error((e as Error).message);
