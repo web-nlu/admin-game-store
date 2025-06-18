@@ -10,6 +10,7 @@ type EmployeeStore = {
   params: {[key: string]: string};
   filterEmployees: (params: {[key: string]: string}) => Promise<void>;
   createEmployee: (category: {email: string, password: string}) => Promise<boolean>;
+  resetPass: (id: string) => Promise<void>;
   clearEmployees: () => void;
   setPage: () => void;
   clearParams: () => void;
@@ -68,5 +69,20 @@ export const useEmployeeStore = create<EmployeeStore>((set) => ({
   setParams: (params: {[key: string]: string}) => set({params}),
   clearParams: () => set({params: {
     size: "20"
-  }})
+  }}),
+  resetPass: async (id: string) => {
+    try {
+      const res = await fetch(`/api/employee/reset-pass/${id}`, {
+        method: 'PUT',
+        headers: {
+          'Content-Type': 'application/json'
+        },
+      });
+      const {message} = await res.json();
+      if (!res.ok) throw new Error(message);
+      toast.success(message)
+    } catch (err) {
+      toast.error((err as Error).message);
+    }
+  }
 }))

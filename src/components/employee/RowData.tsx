@@ -1,8 +1,7 @@
 'use client'
 
-import {Eye, ImageIcon, Phone, User} from "lucide-react";
+import {ImageIcon, Phone, User} from "lucide-react";
 import React from "react";
-import {useRouter} from "next/navigation";
 import {CldImage} from "next-cloudinary";
 import ActionEmployeeButton from "@/components/employee/ActionEmployeeButton";
 
@@ -11,7 +10,6 @@ type Props = {
 }
 
 export default function RowData({ employee }: Props) {
-  const router = useRouter();
 
   return (
     <tr key={employee.id} className="hover:bg-gray-50">

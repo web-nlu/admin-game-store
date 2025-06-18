@@ -1,6 +1,6 @@
 import {useEffect, useRef, useState} from "react";
 import {EllipsisVertical} from "lucide-react";
-import _ from "lodash";
+import {useEmployeeStore} from "@/services/employee/employeeService";
 
 type Props = {
   employee: Employee
@@ -9,6 +9,8 @@ type Props = {
 export default function ActionEmployeeButton({employee}: Props) {
   const [isOpen, setIsOpen] = useState(false);
   const menuRef = useRef<HTMLDivElement>(null);
+  const {resetPass} = useEmployeeStore()
+
 
   // Đóng tooltip khi click ra ngoài
   useEffect(() => {
@@ -36,7 +38,10 @@ export default function ActionEmployeeButton({employee}: Props) {
         <div className="absolute right-0 mt-2 w-48 bg-white rounded-md shadow-lg z-10">
           <div className="py-1 flex flex-col">
             <button
-              // onClick={() => complete()}
+              onClick={() => {
+                setIsOpen(false);
+                resetPass(employee.id.toString())
+              }}
               className="w-full text-left px-4 py-2 text-sm text-gray-700 hover:bg-gray-100">
               Reset mật khẩu
             </button>
