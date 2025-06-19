@@ -31,4 +31,8 @@ export function formatShortCurrency(amount: number): string {
     return (amount / 1000000).toFixed(1) + 'M';
   }
   return formatPrice(amount);
-};
+}
+
+export function getPercentage(value: number, total: number) {
+  return total > 0 ? Math.round((value / total) * 100) : 0;
+}
