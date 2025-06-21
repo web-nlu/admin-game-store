@@ -9,7 +9,7 @@ import {CldImage} from "next-cloudinary";
 export default function ProfileButton() {
   const [isOpen, setIsOpen] = useState(false);
   const tooltipRef = useRef<HTMLDivElement>(null);
-  const {user} = useUserStore();
+  const {user, clearUser} = useUserStore();
   // Close tooltip when clicking outside
   useEffect(() => {
     const handleClickOutside = (event: MouseEvent) => {
@@ -23,19 +23,14 @@ export default function ProfileButton() {
 
   const logout = async () => {
     try {
-      const res = await fetch("/api/auth/logout", {
+      await fetch("/api/auth/logout", {
         method: "POST",
         headers: {
           "Content-Type": "application/json",
         }
       });
-      const {message} = await res.json();
-      if(!res.ok) {
-        toast.success("Đăng xuất không thành công")
-      } else {
-        toast.success(message);
-      }
-
+      toast.success("Đăng xuất không thành công")
+      clearUser()
       window.location.href = "/dang-nhap";
     } catch (err) {
        toast.error((err as Error).message);
